@@ -41,29 +41,37 @@ class PinterestBot:
             print("the login issue is: ", str(e))
 
     def infinite_scroll(self):
-        self.driver.get('https://www.pinterest.com/homefeed/')
-        count = 0
-        scroll_pause_time = 3
+        try:
+            self.driver.get('https://www.pinterest.com/homefeed/')
+            count = 0
+            scroll_pause_time = 3
 
-        # Get scroll height
-        last_height = self.driver.execute_script("return document.body.scrollHeight")
+            # Get scroll height
+            last_height = self.driver.execute_script("return document.body.scrollHeight")
 
-        while True:
-            # Scroll down to bottom
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            while True:
+                # Scroll down to bottom
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-            # Wait to load page
-            time.sleep(scroll_pause_time)
+                # Wait to load page
+                time.sleep(scroll_pause_time)
 
-            # Calculate new scroll height and compare with last scroll height
-            new_height = self.driver.execute_script("return document.body.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
+                # Calculate new scroll height and compare with last scroll height
+                new_height = self.driver.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
 
-            count += 1
-            if count == 12:
-                break
+                count += 1
+                if count == 5:
+                    break
+
+        except Exception as em:
+            logging.error('infinite_scroll Error occurred ' + str(em))
+            print('infinite_scroll Error occurred ' + str(em))
+
+        finally:
+            print(" infinite_scroll() done")
 
     @staticmethod
     def append_to_csv(saved_links_list, my_csv):
@@ -76,11 +84,11 @@ class PinterestBot:
                 print("row (hopefully) written into csv")
 
         except Exception as em:
-            logging.error('Error occurred ' + str(em))
-            print('Error occurred ' + str(em))
+            logging.error('append_to_csv Error occurred ' + str(em))
+            print('append_to_csv Error occurred ' + str(em))
 
         finally:
-            print(" write_to_csv() done")
+            print(" append_to_csv() done")
 
             pass
 
@@ -94,14 +102,14 @@ class PinterestBot:
                     list_of_links.append(single_row)
 
         except IOError as x:
-            print("problem reading the user_accounts csv")
-            logging.error('Error occurred ' + str(x))
+            print("read_links_from_csv problem reading the user_accounts csv")
+            logging.error('read_links_from_csv Error occurred ' + str(x))
         except Exception as e:
-            print("the problem is: ", e)
-            logging.error('Error occurred ' + str(e))
+            print("read_links_from_csv the problem is: ", e)
+            logging.error('read_links_from_csv Error occurred ' + str(e))
 
         finally:
-            print(list_of_links)
+            print("number of links: ", len(list_of_links))
             return list_of_links
 
     @staticmethod
@@ -114,11 +122,11 @@ class PinterestBot:
                     list_of_descriptions.append(single_row)
 
         except IOError as x:
-            print("problem reading the user_accounts csv")
-            logging.error('Error occurred ' + str(x))
+            print("problem reading the read_descs_from_csv csv")
+            logging.error('read_descs_from_csv Error occurred ' + str(x))
         except Exception as e:
-            print("the problem is: ", str(e))
-            logging.error('Error occurred ' + str(e))
+            print("the read_descs_from_csv problem is: ", str(e))
+            logging.error('read_descs_from_csv Error occurred ' + str(e))
 
         finally:
             return list_of_descriptions
@@ -133,8 +141,8 @@ class PinterestBot:
             element.click()
             print(f"{user_link} followed!")
         except Exception as e:
-            print("problem is at ", str(e))
-            logging.error('Error occurred ' + str(e))
+            print("follow_user problem is at ", str(e))
+            logging.error('follow_user Error occurred ' + str(e))
 
     def extract_users_from_dialog(self, user_link):
         try:
@@ -157,8 +165,8 @@ class PinterestBot:
 
             self.append_to_csv(list(links_set), gls.user_accounts_csv)
         except Exception as e:
-            print("the issue is at ", str(e))
-            logging.error('Error occurred ' + str(e))
+            print("the extract_users_from_dialog issue is at ", str(e))
+            logging.error('extract_users_from_dialog Error occurred ' + str(e))
 
     def pin_image(self, single_desc, single_link, single_image):
         try:
@@ -186,8 +194,11 @@ class PinterestBot:
             self.driver.find_element_by_xpath(publish_btn_xpath).click()  # to publish the pin
 
         except Exception as e:
-            print("problem is at ", str(e))
-            logging.error('Error occurred ' + str(e))
+            print("pin_image problem is at ", str(e))
+            logging.error('pin_image Error occurred ' + str(e))
+
+    def kill_dialog_boxes(self):
+        pass
 
     def kill_browser(self):
         self.driver.quit()
@@ -202,7 +213,8 @@ if __name__ == "__main__":
 
         list_of_landers = ['https://cool-giveaways.weebly.com/',
                            'https://amzn.to/2Fw2wcz',
-                           'https://amzn.to/36C970V'
+                           'https://amzn.to/36C970V',
+                           'https://amzn.to/379FhAY'
                            ]
         list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
         links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
@@ -213,18 +225,20 @@ if __name__ == "__main__":
         random_user = links_to_follow[randint(0, len(links_to_follow)-1)]
         random_image = image_list[randint(0, len(image_list)-1)]
 
-        for _ in range(1000):
+        for _ in range(100):
             pn_bot.pin_image(random_desc, random_lander, random_image)
             time.sleep(randint(3, 30))
             pn_bot.follow_user(random_user)
             time.sleep(randint(3, 30))
+            pn_bot.infinite_scroll()
 
         pn_bot.infinite_scroll()
         pn_bot.kill_browser()
         time.sleep(randint(5, 50))
 
 
-
+# todo add images
+# todo handle the dialog boxes
 
 
 
