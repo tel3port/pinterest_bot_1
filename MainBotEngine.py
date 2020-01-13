@@ -121,7 +121,7 @@ class PinterestBot:
         except IOError as x:
             print("problem reading the read_descs_from_csv csv", x)
         except Exception as e:
-            print("the read_descs_from_csv problem is: ", str(e))
+            print("the read_descs from csv problem is: ", str(e))
 
         finally:
             return list_of_descriptions
