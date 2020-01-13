@@ -227,8 +227,6 @@ if __name__ == "__main__":
             time.sleep(7)
             pn_bot.pin_image(random_desc, random_lander, random_image)
             time.sleep(randint(3, 30))
-            print(type(random_user))
-            print(random_user)
             pn_bot.follow_user(random_user[0])
             time.sleep(randint(3, 30))
             pn_bot.infinite_scroll()
