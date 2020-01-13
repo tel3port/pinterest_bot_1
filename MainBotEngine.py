@@ -101,7 +101,7 @@ class PinterestBot:
                     list_of_links.append(single_row)
 
         except IOError as x:
-            print("read_links_from_csv problem reading the user_accounts csv")
+            print("read_links_from_csv problem reading the user_accounts csv", x)
         except Exception as e:
             print("read_links_from_csv the problem is: ", e)
 
@@ -119,7 +119,7 @@ class PinterestBot:
                     list_of_descriptions.append(single_row)
 
         except IOError as x:
-            print("problem reading the read_descs_from_csv csv")
+            print("problem reading the read_descs_from_csv csv", x)
         except Exception as e:
             print("the read_descs_from_csv problem is: ", str(e))
 
@@ -233,22 +233,6 @@ if __name__ == "__main__":
             time.sleep(randint(3, 30))
             pn_bot.infinite_scroll()
 
-            if i == 4:
-                break
-
         pn_bot.infinite_scroll()
         pn_bot.kill_browser()
         time.sleep(randint(5, 50))
-        break
-
-print("done. Deploy?")
-# todo test the script on this account
-# todo upload to heroku
-
-
-
-
-
-
-
-
