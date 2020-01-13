@@ -172,7 +172,7 @@ class PinterestBot:
             dest_link_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[2]/div/div[1]/textarea'
             publish_btn_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div/button[2]'
             board_selector = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div'
-            self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} items remain!")
+            self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} PRIZES remain!")
             time.sleep(5)
             self.driver.find_element_by_xpath(desc_xpath).send_keys(single_desc)
             time.sleep(4)
