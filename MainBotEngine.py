@@ -6,7 +6,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import csv
 import globals as gls
-import logging
 import glob
 import os
 from random import randint
@@ -19,7 +18,6 @@ class PinterestBot:
         self.driver = webdriver.Chrome("./chromedriver")
         self. base_url = "https://www.pinterest.com"
         self.login()
-        self.login_config = gls.log_file_writer()
 
     def login(self):
         options = webdriver.ChromeOptions()
@@ -37,17 +35,18 @@ class PinterestBot:
         try:
             self.driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div[3]/div/div/div[3]/form/div[5]/button').click()
         except Exception as e:
-            logging.error('Login Error occurred ' + str(e))
             print("the login issue is: ", str(e))
 
     def infinite_scroll(self):
+        time.sleep(10)
         try:
             self.driver.get('https://www.pinterest.com/homefeed/')
             count = 0
-            scroll_pause_time = 3
+            scroll_pause_time = 30
 
             # Get scroll height
             last_height = self.driver.execute_script("return document.body.scrollHeight")
+            time.sleep(3)
 
             while True:
                 # Scroll down to bottom
@@ -58,6 +57,8 @@ class PinterestBot:
 
                 # Calculate new scroll height and compare with last scroll height
                 new_height = self.driver.execute_script("return document.body.scrollHeight")
+                time.sleep(3)
+
                 if new_height == last_height:
                     break
                 last_height = new_height
@@ -67,7 +68,6 @@ class PinterestBot:
                     break
 
         except Exception as em:
-            logging.error('infinite_scroll Error occurred ' + str(em))
             print('infinite_scroll Error occurred ' + str(em))
 
         finally:
@@ -84,7 +84,6 @@ class PinterestBot:
                 print("row (hopefully) written into csv")
 
         except Exception as em:
-            logging.error('append_to_csv Error occurred ' + str(em))
             print('append_to_csv Error occurred ' + str(em))
 
         finally:
@@ -103,10 +102,8 @@ class PinterestBot:
 
         except IOError as x:
             print("read_links_from_csv problem reading the user_accounts csv")
-            logging.error('read_links_from_csv Error occurred ' + str(x))
         except Exception as e:
             print("read_links_from_csv the problem is: ", e)
-            logging.error('read_links_from_csv Error occurred ' + str(e))
 
         finally:
             print("number of links: ", len(list_of_links))
@@ -123,10 +120,8 @@ class PinterestBot:
 
         except IOError as x:
             print("problem reading the read_descs_from_csv csv")
-            logging.error('read_descs_from_csv Error occurred ' + str(x))
         except Exception as e:
             print("the read_descs_from_csv problem is: ", str(e))
-            logging.error('read_descs_from_csv Error occurred ' + str(e))
 
         finally:
             return list_of_descriptions
@@ -142,18 +137,20 @@ class PinterestBot:
             print(f"{user_link} followed!")
         except Exception as e:
             print("follow_user problem is at ", str(e))
-            logging.error('follow_user Error occurred ' + str(e))
 
     def extract_users_from_dialog(self, user_link):
+        time.sleep(7)
+
         try:
             links_set = set()
             self.driver.get(user_link)
+            time.sleep(7)
             btn_xpath = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/button'
 
             el = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, btn_xpath)))
             el.click()
 
-            time.sleep(600)
+            time.sleep(9)
             results = self.driver.find_elements_by_xpath('//a[@href]')
 
             print(f"size of results {len(results)}")
@@ -166,7 +163,6 @@ class PinterestBot:
             self.append_to_csv(list(links_set), gls.user_accounts_csv)
         except Exception as e:
             print("the extract_users_from_dialog issue is at ", str(e))
-            logging.error('extract_users_from_dialog Error occurred ' + str(e))
 
     def pin_image(self, single_desc, single_link, single_image):
         try:
@@ -176,14 +172,14 @@ class PinterestBot:
             dest_link_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[2]/div/div[1]/textarea'
             publish_btn_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div/button[2]'
             board_selector = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div'
-            self.driver.find_element_by_xpath(title_xpath).send_keys("2020 be like...")
+            self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} items remain!")
             time.sleep(5)
             self.driver.find_element_by_xpath(desc_xpath).send_keys(single_desc)
             time.sleep(4)
             self.driver.find_element_by_xpath(dest_link_xpath).send_keys(single_link)
             time.sleep(7)
 
-            self.driver.find_element_by_id('media-upload-input').send_keys(os.getcwd()+single_image)
+            self.driver.find_element_by_id('media-upload-input').send_keys(f"{os.getcwd()}{'/'}{single_image}")
 
             self.driver.find_element_by_xpath(publish_btn_xpath).click()  # to reveal the menu
             board = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, board_selector)))
@@ -195,7 +191,6 @@ class PinterestBot:
 
         except Exception as e:
             print("pin_image problem is at ", str(e))
-            logging.error('pin_image Error occurred ' + str(e))
 
     def kill_dialog_boxes(self):
         pass
@@ -209,6 +204,9 @@ if __name__ == "__main__":
     while 1:
 
         pn_bot = PinterestBot("testerslimited@gmail.com", "E5XB!D2MerD!XGK")
+
+        pn_bot.infinite_scroll()
+
         pn_bot.extract_users_from_dialog(gls.follower_source)
 
         list_of_landers = ['https://cool-giveaways.weebly.com/',
@@ -220,25 +218,32 @@ if __name__ == "__main__":
         links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
         image_list = glob.glob('media/*')
 
-        random_lander = list_of_landers[randint(0, len(list_of_landers)-1)]
-        random_desc = list_of_descs[randint(0, len(list_of_descs)-1)]
-        random_user = links_to_follow[randint(0, len(links_to_follow)-1)]
-        random_image = image_list[randint(0, len(image_list)-1)]
+        for i in range(100):
+            random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
+            random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
+            random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            random_image = image_list[randint(0, len(image_list) - 1)]
 
-        for _ in range(100):
+            time.sleep(7)
             pn_bot.pin_image(random_desc, random_lander, random_image)
             time.sleep(randint(3, 30))
-            pn_bot.follow_user(random_user)
+            print(type(random_user))
+            print(random_user)
+            pn_bot.follow_user(random_user[0])
             time.sleep(randint(3, 30))
             pn_bot.infinite_scroll()
+
+            if i == 4:
+                break
 
         pn_bot.infinite_scroll()
         pn_bot.kill_browser()
         time.sleep(randint(5, 50))
+        break
 
-
-# todo add images
-# todo handle the dialog boxes
+print("done. Deploy?")
+# todo test the script on this account
+# todo upload to heroku
 
 
 

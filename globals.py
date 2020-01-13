@@ -23,5 +23,5 @@ def log_file_writer():
     return logging.basicConfig(filename='errors.log',
                                format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                                datefmt='%Y-%m-%d:%H:%M:%S',
-                               level=logging.ERROR)
+                               level=logging.DEBUG)
 
