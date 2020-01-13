@@ -27,7 +27,7 @@ class PinterestBot:
     def login(self):
 
         self.driver.get(f"{self.base_url}/login/")
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.NAME, "id")))
+        WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.NAME, "id")))
 
         # fill up the credential fields
         self.driver.find_element_by_name('id').send_keys(self.username)
@@ -130,12 +130,16 @@ class PinterestBot:
             return list_of_descriptions
 
     def follow_user(self, user_link):
+        time.sleep(15)
         try:
             self.driver.get(user_link)
+            time.sleep(15)
 
             button_xpath = "//button[contains(.,'Follow')]"
 
-            element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+            element = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+            time.sleep(15)
+
             element.click()
             print(f"{user_link} followed!")
         except Exception as e:
@@ -168,6 +172,8 @@ class PinterestBot:
             print("the extract_users_from_dialog issue is at ", str(e))
 
     def pin_image(self, single_desc, single_link, single_image):
+        time.sleep(15)
+
         try:
             self.driver.get(gls.pin_builder)
             title_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div[1]/div/div/div[1]/textarea'
