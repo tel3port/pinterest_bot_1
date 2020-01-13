@@ -15,15 +15,17 @@ class PinterestBot:
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        options = webdriver.ChromeOptions()
+        # options.add_argument("start-maximized")
+        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # options.add_experimental_option('useAutomationExtension', False)
+        # options.add_argument("--headless")
         self.driver = webdriver.Chrome("./chromedriver")
         self. base_url = "https://www.pinterest.com"
         self.login()
 
     def login(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("start-maximized")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+
         self.driver.get(f"{self.base_url}/login/")
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.NAME, "id")))
 
@@ -38,6 +40,7 @@ class PinterestBot:
             print("the login issue is: ", str(e))
 
     def infinite_scroll(self):
+        print("starting infinite scroll")
         time.sleep(10)
         try:
             self.driver.get('https://www.pinterest.com/homefeed/')
