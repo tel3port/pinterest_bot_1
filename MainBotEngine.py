@@ -230,6 +230,13 @@ if __name__ == "__main__":
             pn_bot.follow_user(random_user[0])
             time.sleep(randint(3, 30))
             pn_bot.infinite_scroll()
+            time.sleep(randint(3, 30))
+            another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            pn_bot.follow_user(another_random_user[0])
+            time.sleep(randint(3, 30))
+            yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            pn_bot.follow_user(yet_another_random_user[0])
+            time.sleep(randint(3, 30))
 
         pn_bot.infinite_scroll()
         pn_bot.kill_browser()
