@@ -213,7 +213,7 @@ if __name__ == "__main__":
         links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
         image_list = glob.glob('media/*')
 
-        for i in range(100):
+        while 1:
             random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
             random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
             random_image = image_list[randint(0, len(image_list) - 1)]
