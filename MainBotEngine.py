@@ -157,7 +157,7 @@ class PinterestBot:
             el = WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.XPATH, btn_xpath)))
             el.click()
 
-            time.sleep(900)
+            time.sleep(12)
             results = self.driver.find_elements_by_xpath('//a[@href]')
 
             print(f"size of results {len(results)}")
