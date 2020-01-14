@@ -15,12 +15,13 @@ class PinterestBot:
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        # options = webdriver.ChromeOptions()
-        # options.add_argument("start-maximized")
-        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        # options.add_experimental_option('useAutomationExtension', False)
-        # options.add_argument("--headless")
-        self.driver = webdriver.Chrome(f"{os.getcwd()}/chromedriver")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-sgm-usage")
+        chrome_options.add_argument("--no-sandbox")
+        self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
+        # self.driver = webdriver.Chrome("./chromedriver",)
         self. base_url = "https://www.pinterest.com"
         self.login()
 
