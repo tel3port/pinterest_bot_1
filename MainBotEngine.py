@@ -172,6 +172,7 @@ class PinterestBot:
             print("the extract_users_from_dialog issue is at ", str(e))
 
     def pin_image(self, single_desc, single_link, single_image):
+        print("pin image start")
         time.sleep(15)
 
         try:
@@ -197,9 +198,10 @@ class PinterestBot:
             actions.move_to_element(board).click().perform()
             time.sleep(3)
             self.driver.find_element_by_xpath(publish_btn_xpath).click()  # to publish the pin
+            print("pin image done")
 
         except Exception as e:
-            print("pin_image problem is at ", str(e))
+            print("pin_image problem is at ", e)
 
     def kill_dialog_boxes(self):
         pass
