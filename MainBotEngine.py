@@ -229,9 +229,9 @@ if __name__ == "__main__":
             # pn_bot.follow_user(yet_another_random_user[0])
             # time.sleep(randint(3, 30))
 
-            print("restarting server")
+            print("restarting the server")
             pn_bot.restart_heroku()
-            time.sleep(5)
+            time.sleep(6)
 
 
 
