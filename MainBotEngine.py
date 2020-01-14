@@ -238,5 +238,5 @@ if __name__ == "__main__":
             time.sleep(randint(3, 30))
 
         pn_bot.infinite_scroll()
-        pn_bot.kill_browser()
+        # pn_bot.kill_browser()
         time.sleep(randint(5, 50))
