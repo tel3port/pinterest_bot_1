@@ -181,10 +181,6 @@ class PinterestBot:
     def kill_browser(self):
         self.driver.quit()
 
-    def restart_heroku(self):
-        os.system('heroku restart')
-        print("heroku restarted hopefully")
-
 
 if __name__ == "__main__":
 
@@ -206,32 +202,30 @@ if __name__ == "__main__":
         image_list = glob.glob('media/*')
 
         for i in range(100):
-            # random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
-            # random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
-            # random_image = image_list[randint(0, len(image_list) - 1)]
-            #
-            # time.sleep(7)
-            # pn_bot.pin_image(random_desc, random_lander, random_image)
-            # time.sleep(randint(3, 30))
-            #
-            # random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            # pn_bot.follow_user(random_user[0])
-            # time.sleep(randint(3, 30))
-            #
-            # pn_bot.infinite_scroll()
-            # time.sleep(randint(3, 30))
-            #
-            # another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            # pn_bot.follow_user(another_random_user[0])
-            # time.sleep(randint(3, 30))
-            #
-            # yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            # pn_bot.follow_user(yet_another_random_user[0])
-            # time.sleep(randint(3, 30))
+            random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
+            random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
+            random_image = image_list[randint(0, len(image_list) - 1)]
 
-            print("restarting the server")
-            pn_bot.restart_heroku()
-            time.sleep(6)
+            time.sleep(7)
+            pn_bot.pin_image(random_desc, random_lander, random_image)
+            time.sleep(randint(3, 30))
+
+            random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            pn_bot.follow_user(random_user[0])
+            time.sleep(randint(3, 30))
+
+            pn_bot.infinite_scroll()
+            time.sleep(randint(3, 30))
+
+            another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            pn_bot.follow_user(another_random_user[0])
+            time.sleep(randint(3, 30))
+
+            yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+            pn_bot.follow_user(yet_another_random_user[0])
+            time.sleep(randint(3, 30))
+
+
 
 
 
