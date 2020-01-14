@@ -216,7 +216,7 @@ if __name__ == "__main__":
 
         pn_bot.infinite_scroll()
 
-        pn_bot.extract_users_from_dialog(gls.follower_source)
+        # pn_bot.extract_users_from_dialog(gls.follower_source)
 
         list_of_landers = ['https://cool-giveaways.weebly.com/',
                            'https://amzn.to/2Fw2wcz',
