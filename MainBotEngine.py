@@ -20,7 +20,7 @@ class PinterestBot:
         # options.add_experimental_option("excludeSwitches", ["enable-automation"])
         # options.add_experimental_option('useAutomationExtension', False)
         # options.add_argument("--headless")
-        self.driver = webdriver.Chrome("./chromedriver")
+        self.driver = webdriver.Chrome(f"{os.getcwd()}/chromedriver")
         self. base_url = "https://www.pinterest.com"
         self.login()
 
