@@ -154,7 +154,7 @@ class PinterestBot:
             time.sleep(7)
             btn_xpath = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/button'
 
-            el = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, btn_xpath)))
+            el = WebDriverWait(self.driver, 25).until(EC.visibility_of_all_elements_located((By.XPATH, btn_xpath)))
             el.click()
 
             time.sleep(9)
