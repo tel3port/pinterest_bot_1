@@ -38,7 +38,7 @@ class PinterestBot:
         try:
             self.driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div[3]/div/div/div[3]/form/div[5]/button').click()
         except Exception as e:
-            print("the login issue is: ", str(e))
+            print("the login issue is: ", e.with_traceback())
 
     def infinite_scroll(self):
         print("starting infinite scroll")
@@ -144,33 +144,7 @@ class PinterestBot:
             element.click()
             print(f"{user_link} followed!")
         except Exception as e:
-            print("follow_user problem is at ", str(e))
-
-    def extract_users_from_dialog(self, user_link):
-        time.sleep(7)
-
-        try:
-            links_set = set()
-            self.driver.get(user_link)
-            time.sleep(7)
-            btn_xpath = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div[2]/button'
-
-            el = WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.XPATH, btn_xpath)))
-            el.click()
-
-            time.sleep(12)
-            results = self.driver.find_elements_by_xpath('//a[@href]')
-
-            print(f"size of results {len(results)}")
-
-            for res in results:
-                final_link = res.get_attribute('href')
-                print(final_link)
-                links_set.add(final_link)
-
-            self.append_to_csv(list(links_set), gls.user_accounts_csv)
-        except Exception as e:
-            print("the extract_users_from_dialog issue is at ", str(e))
+            print("follow_user problem is at ", e.with_traceback())
 
     def pin_image(self, single_desc, single_link, single_image):
         print("pin image start")
@@ -202,10 +176,7 @@ class PinterestBot:
             print("pin image done")
 
         except Exception as e:
-            print("pin_image problem is at ", e)
-
-    def kill_dialog_boxes(self):
-        pass
+            print("pin_image problem is at ", e.with_traceback())
 
     def kill_browser(self):
         self.driver.quit()
