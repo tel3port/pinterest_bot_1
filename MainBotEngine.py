@@ -130,6 +130,7 @@ class PinterestBot:
             return list_of_descriptions
 
     def follow_user(self, user_link):
+        print("follow user started")
         time.sleep(15)
         try:
             self.driver.get(user_link)
