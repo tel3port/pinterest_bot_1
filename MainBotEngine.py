@@ -9,6 +9,7 @@ import globals as gls
 import glob
 import os
 from random import randint
+import traceback
 
 
 class PinterestBot:
@@ -38,7 +39,8 @@ class PinterestBot:
         try:
             self.driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div[3]/div/div/div[3]/form/div[5]/button').click()
         except Exception as e:
-            print("the login issue is: ", e.with_traceback())
+            print("the login issue is: ", e)
+            print(traceback.format_exc())
 
     def infinite_scroll(self):
         print("starting infinite scroll")
@@ -73,6 +75,7 @@ class PinterestBot:
 
         except Exception as em:
             print('infinite_scroll Error occurred ' + str(em))
+            print(traceback.format_exc())
 
         finally:
             print(" infinite_scroll() done")
@@ -88,6 +91,7 @@ class PinterestBot:
 
         except Exception as em:
             print('append_to_csv Error occurred ' + str(em))
+            print(traceback.format_exc())
 
         finally:
             print(" append_to_csv() done")
@@ -105,8 +109,11 @@ class PinterestBot:
 
         except IOError as x:
             print("read_links_from_csv problem reading the user_accounts csv", x)
+            print(traceback.format_exc())
+
         except Exception as e:
             print("read_links_from_csv the problem is: ", e)
+            print(traceback.format_exc())
 
         finally:
             print("number of links: ", len(list_of_links))
@@ -123,8 +130,11 @@ class PinterestBot:
 
         except IOError as x:
             print("problem reading the read_descs_from_csv csv", x)
+            print(traceback.format_exc())
+
         except Exception as e:
             print("the read_descs from csv problem is: ", str(e))
+            print(traceback.format_exc())
 
         finally:
             return list_of_descriptions
@@ -144,7 +154,8 @@ class PinterestBot:
             element.click()
             print(f"{user_link} followed!")
         except Exception as e:
-            print("follow_user problem is at ", e.with_traceback())
+            print("follow user issue, ", e)
+            print(traceback.format_exc())
 
     def pin_image(self, single_desc, single_link, single_image):
         print("pin image start")
@@ -176,7 +187,8 @@ class PinterestBot:
             print("pin image done")
 
         except Exception as e:
-            print("pin_image problem is at ", e.with_traceback())
+            print("pin_image problem is at ", e)
+            print(traceback.format_exc())
 
     def kill_browser(self):
         self.driver.quit()
@@ -224,10 +236,6 @@ if __name__ == "__main__":
             yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
             pn_bot.follow_user(yet_another_random_user[0])
             time.sleep(randint(3, 30))
-
-
-
-
 
         pn_bot.infinite_scroll()
         pn_bot.kill_browser()
