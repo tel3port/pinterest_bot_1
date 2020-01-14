@@ -17,7 +17,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
@@ -157,7 +157,7 @@ class PinterestBot:
             el = WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.XPATH, btn_xpath)))
             el.click()
 
-            time.sleep(9)
+            time.sleep(900)
             results = self.driver.find_elements_by_xpath('//a[@href]')
 
             print(f"size of results {len(results)}")
@@ -214,43 +214,43 @@ if __name__ == "__main__":
 
         pn_bot = PinterestBot("testerslimited@gmail.com", "E5XB!D2MerD!XGK")
 
-        pn_bot.infinite_scroll()
+        # pn_bot.infinite_scroll()
 
         pn_bot.extract_users_from_dialog(gls.follower_source)
 
-        list_of_landers = ['https://cool-giveaways.weebly.com/',
-                           'https://amzn.to/2Fw2wcz',
-                           'https://amzn.to/36C970V',
-                           'https://amzn.to/379FhAY'
-                           ]
-        list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
-        links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
-        image_list = glob.glob('media/*')
-
-        for i in range(100):
-            random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
-            random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
-            random_image = image_list[randint(0, len(image_list) - 1)]
-
-            time.sleep(7)
-            pn_bot.pin_image(random_desc, random_lander, random_image)
-            time.sleep(randint(3, 30))
-
-            random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(random_user[0])
-            time.sleep(randint(3, 30))
-
-            pn_bot.infinite_scroll()
-            time.sleep(randint(3, 30))
-
-            another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(another_random_user[0])
-            time.sleep(randint(3, 30))
-
-            yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(yet_another_random_user[0])
-            time.sleep(randint(3, 30))
-
-        pn_bot.infinite_scroll()
-        pn_bot.kill_browser()
-        time.sleep(randint(5, 50))
+        # list_of_landers = ['https://cool-giveaways.weebly.com/',
+        #                    'https://amzn.to/2Fw2wcz',
+        #                    'https://amzn.to/36C970V',
+        #                    'https://amzn.to/379FhAY'
+        #                    ]
+        # list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
+        # links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
+        # image_list = glob.glob('media/*')
+        #
+        # for i in range(100):
+        #     random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
+        #     random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
+        #     random_image = image_list[randint(0, len(image_list) - 1)]
+        #
+        #     time.sleep(7)
+        #     pn_bot.pin_image(random_desc, random_lander, random_image)
+        #     time.sleep(randint(3, 30))
+        #
+        #     random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+        #     pn_bot.follow_user(random_user[0])
+        #     time.sleep(randint(3, 30))
+        #
+        #     pn_bot.infinite_scroll()
+        #     time.sleep(randint(3, 30))
+        #
+        #     another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+        #     pn_bot.follow_user(another_random_user[0])
+        #     time.sleep(randint(3, 30))
+        #
+        #     yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+        #     pn_bot.follow_user(yet_another_random_user[0])
+        #     time.sleep(randint(3, 30))
+        #
+        # pn_bot.infinite_scroll()
+        # pn_bot.kill_browser()
+        # time.sleep(randint(5, 50))
