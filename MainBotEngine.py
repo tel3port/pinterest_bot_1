@@ -28,6 +28,7 @@ class PinterestBot:
         self.login()
 
     def login(self):
+        print("logging you in....")
 
         self.driver.get(f"{self.base_url}/login/")
         WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.NAME, "id")))
@@ -39,6 +40,8 @@ class PinterestBot:
         # click login button
         try:
             self.driver.find_element_by_xpath('//*[contains(@type,"submit")]').click()
+
+            print("login hopefully worked...")
         except Exception as e:
             print("the login issue is: ", e)
             print(traceback.format_exc())
