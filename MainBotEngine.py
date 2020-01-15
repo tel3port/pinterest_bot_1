@@ -19,7 +19,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
@@ -219,7 +219,10 @@ if __name__ == "__main__":
         random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
         pn_bot.follow_user(random_user[0])
 
+
+    def custom_scheduler():
         # scheduling the pin and follow  and infinite scroll times
+        print("starting custom scheduler")
 
         schedule.every().day.at("11:15").do(pn_bot.infinite_scroll)
         schedule.every().day.at("08:30").do(pn_bot.infinite_scroll)
@@ -280,5 +283,5 @@ if __name__ == "__main__":
             schedule.run_pending()
             time.sleep(1)
 
-        # todo schedule the function calls
-        # todo push to github and restart the app
+
+    custom_scheduler()
