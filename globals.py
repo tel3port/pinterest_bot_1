@@ -4,6 +4,8 @@ import logging
 
 user_accounts_csv = "user_accounts.csv"
 descs_csv = "descs.csv"
+complements_csv = "complements.csv"
+
 write = 'w'
 read = "r"
 append = 'a'

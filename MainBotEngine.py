@@ -19,9 +19,10 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--start-maximized")
         self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
         # self.driver = webdriver.Chrome("./chromedriver",)
         self. base_url = "https://www.pinterest.com"
@@ -143,6 +144,26 @@ class PinterestBot:
         finally:
             return list_of_descriptions
 
+    @staticmethod
+    def read_complements_from_csv(my_csv):
+        complements_list = []
+        try:
+            with open(my_csv, gls.read) as rdr:
+                reader = csv.reader(rdr, delimiter=",")
+                for single_row in reader:
+                    complements_list.append(single_row)
+
+        except IOError as x:
+            print("problem reading the read_descs_from_csv csv", x)
+            print(traceback.format_exc())
+
+        except Exception as e:
+            print("the read_descs from csv problem is: ", str(e))
+            print(traceback.format_exc())
+
+        finally:
+            return complements_list
+
     def follow_user(self, user_link):
         print("follow user started")
         time.sleep(15)
@@ -194,10 +215,68 @@ class PinterestBot:
             print("pin_image problem is at ", e)
             print(traceback.format_exc())
 
+    def image_commenter(self, pin_link, list_complements):
+        print('xxxxxx  pin_link xxxxxxxx')
+        random_complement = list_complements[randint(0, len(list_complements) - 1)]
+        print(random_complement)
+        print(pin_link)
+
+        comment_tab_xpath = '//*[contains(@data-test-id,"canonicalCommentsTab")]'
+        comment_label = '//*[contains(@name,"communityItemTextBox")]'
+        comment_textbox = '//*[contains(@data-test-id,"mentionsInput")]'
+        submit_comment_btn_xpath = '//*[contains(@data-test-id,"activity-item-create-submit")]'
+
+        try:
+            self.driver.get(pin_link)
+
+            tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, comment_tab_xpath)))
+            time.sleep(5)
+            tab.click()
+            time.sleep(5)
+            self.driver.find_element_by_xpath(comment_label).click()
+            time.sleep(5)
+            self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement)
+            time.sleep(7)
+            self.driver.find_element_by_xpath(submit_comment_btn_xpath).click()
+            print("commenting done!")
+        except Exception as we:
+            print('image_commenter Error occurred ' + str(we))
+            print(traceback.format_exc())
+
+    def image_link_extractor(self, list_complements):
+        links_set = set()
+        try:
+            time.sleep(7)
+            self.driver.get('https://www.pinterest.com/homefeed/')
+
+            time.sleep(5)
+            results = self.driver.find_elements_by_xpath('//a[@href]')
+
+            print(f"number of pin links {len(results)}")
+
+            for res in results:
+                final_link = res.get_attribute('href')
+                links_set.add(final_link)
+
+            count = 0
+            for single_link in list(links_set):
+                if 'pinterest.com/pin/' in single_link:
+                    self.image_commenter(single_link, list_complements)
+
+                count += 1
+                if count == 20:
+                    break
+
+            links_set.clear()
+
+        except Exception as we:
+            print('image_commenter Error occurred ' + str(we))
+            print(traceback.format_exc())
+
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("marlinx2020@protonmail.com", "E5XB!D2MerD!XGK")
 
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://amzn.to/2Fw2wcz',
@@ -219,13 +298,20 @@ if __name__ == "__main__":
         random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
         pn_bot.follow_user(random_user[0])
 
+    def comment_sequence():
+        list_of_complements = pn_bot.read_complements_from_csv(gls.complements_csv)
+        print(f'complement list size: {len(list_of_complements)}')
+        pn_bot.image_link_extractor(list_of_complements)
+
 
     def custom_scheduler():
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
 
-        schedule.every().day.at("11:15").do(pn_bot.infinite_scroll)
-        schedule.every().day.at("08:30").do(pn_bot.infinite_scroll)
+        schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
+        schedule.every().day.at("09:10").do(comment_sequence)
+        schedule.every().day.at("10:15").do(pn_bot.infinite_scroll)
+        schedule.every().day.at("11:23").do(comment_sequence)
 
         schedule.every().day.at("12:01").do(pin_image_sequence)
         schedule.every().day.at("12:37").do(pin_image_sequence)
