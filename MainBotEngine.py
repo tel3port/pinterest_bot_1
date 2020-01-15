@@ -10,6 +10,7 @@ import glob
 import os
 from random import randint
 import traceback
+import schedule
 
 
 class PinterestBot:
@@ -18,7 +19,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
@@ -37,7 +38,7 @@ class PinterestBot:
 
         # click login button
         try:
-            self.driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div[3]/div/div/div[3]/form/div[5]/button').click()
+            self.driver.find_element_by_xpath('//*[contains(@type,"submit")]').click()
         except Exception as e:
             print("the login issue is: ", e)
             print(traceback.format_exc())
@@ -70,7 +71,7 @@ class PinterestBot:
                 last_height = new_height
 
                 count += 1
-                if count == 5:
+                if count == 100:
                     break
 
         except Exception as em:
@@ -163,11 +164,11 @@ class PinterestBot:
 
         try:
             self.driver.get(gls.pin_builder)
-            title_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div[1]/div/div/div[1]/textarea'
-            desc_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div[3]/div/div[1]/textarea'
-            dest_link_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[2]/div/div[1]/textarea'
-            publish_btn_xpath = '/html/body/div[1]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div/button[2]'
-            board_selector = '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div'
+            title_xpath = '//*[contains(@id,"pin-draft-title")]'
+            desc_xpath = '//*[contains(@id,"pin-draft-description")]'
+            dest_link_xpath = '//*[contains(@id,"pin-draft-link")]'
+            publish_btn_xpath = '//*[contains(@data-test-id,"board-dropdown-save-button")]'
+            board_selector = '//*[contains(@title,"Stuff to Buy")]'
             self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} PRIZES remain!")
             time.sleep(5)
             self.driver.find_element_by_xpath(desc_xpath).send_keys(single_desc)
@@ -190,53 +191,91 @@ class PinterestBot:
             print("pin_image problem is at ", e)
             print(traceback.format_exc())
 
-    def kill_browser(self):
-        self.driver.quit()
-
 
 if __name__ == "__main__":
 
-    while 1:
+    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
 
-        pn_bot = PinterestBot("testerslimited@gmail.com", "E5XB!D2MerD!XGK")
+    list_of_landers = ['https://cool-giveaways.weebly.com/',
+                       'https://amzn.to/2Fw2wcz',
+                       'https://amzn.to/36C970V',
+                       'https://amzn.to/379FhAY'
+                       ]
+    list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
+    links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
+    image_list = glob.glob('media/*')
 
-        pn_bot.infinite_scroll()
 
-        # pn_bot.extract_users_from_dialog(gls.follower_source)
+    def pin_image_sequence():
+        random_image = image_list[randint(0, len(image_list) - 1)]
+        random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
+        random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
+        pn_bot.pin_image(random_desc, random_lander, random_image)
 
-        list_of_landers = ['https://cool-giveaways.weebly.com/',
-                           'https://amzn.to/2Fw2wcz',
-                           'https://amzn.to/36C970V',
-                           'https://amzn.to/379FhAY'
-                           ]
-        list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
-        links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
-        image_list = glob.glob('media/*')
+    def follow_sequence():
+        random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
+        pn_bot.follow_user(random_user[0])
 
-        while 1:
-            random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
-            random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
-            random_image = image_list[randint(0, len(image_list) - 1)]
+        # scheduling the pin and follow  and infinite scroll times
 
-            time.sleep(7)
-            pn_bot.pin_image(random_desc, random_lander, random_image)
-            time.sleep(randint(3, 30))
+        schedule.every().day.at("11:15").do(pn_bot.infinite_scroll)
+        schedule.every().day.at("08:30").do(pn_bot.infinite_scroll)
 
-            random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(random_user[0])
-            time.sleep(randint(3, 30))
+        schedule.every().day.at("12:01").do(pin_image_sequence)
+        schedule.every().day.at("12:37").do(pin_image_sequence)
+        schedule.every().day.at("13:05").do(pin_image_sequence)
+        schedule.every().day.at("13:44").do(pin_image_sequence)
+        schedule.every().day.at("14:07").do(pin_image_sequence)
+        schedule.every().day.at("14:55").do(pin_image_sequence)
+        schedule.every().day.at("15:03").do(pin_image_sequence)
+        schedule.every().day.at("15:39").do(pin_image_sequence)
+        schedule.every().day.at("16:16").do(pin_image_sequence)
+        schedule.every().day.at("16:40").do(pin_image_sequence)
+        schedule.every().day.at("17:10").do(pin_image_sequence)
+        schedule.every().day.at("17:53").do(pin_image_sequence)
+        schedule.every().day.at("18:25").do(pin_image_sequence)
+        schedule.every().day.at("18:45").do(pin_image_sequence)
+        schedule.every().day.at("19:02").do(pin_image_sequence)
+        schedule.every().day.at("19:37").do(pin_image_sequence)
+        schedule.every().day.at("20:22").do(pin_image_sequence)
+        schedule.every().day.at("20:44").do(pin_image_sequence)
+        schedule.every().day.at("21:11").do(pin_image_sequence)
+        schedule.every().day.at("21:20").do(pin_image_sequence)
+        schedule.every().day.at("22:15").do(pin_image_sequence)
+        schedule.every().day.at("22:30").do(pin_image_sequence)
+        schedule.every().day.at("22:44").do(pin_image_sequence)
+        schedule.every().day.at("23:01").do(pin_image_sequence)
+        schedule.every().day.at("23:40").do(pin_image_sequence)
 
-            pn_bot.infinite_scroll()
-            time.sleep(randint(3, 30))
+        schedule.every().day.at("12:07").do(follow_sequence)
+        schedule.every().day.at("12:35").do(follow_sequence)
+        schedule.every().day.at("13:12").do(follow_sequence)
+        schedule.every().day.at("13:45").do(follow_sequence)
+        schedule.every().day.at("14:13").do(follow_sequence)
+        schedule.every().day.at("14:57").do(follow_sequence)
+        schedule.every().day.at("15:13").do(follow_sequence)
+        schedule.every().day.at("15:42").do(follow_sequence)
+        schedule.every().day.at("16:22").do(follow_sequence)
+        schedule.every().day.at("16:44").do(follow_sequence)
+        schedule.every().day.at("17:15").do(follow_sequence)
+        schedule.every().day.at("17:57").do(follow_sequence)
+        schedule.every().day.at("18:29").do(follow_sequence)
+        schedule.every().day.at("18:49").do(follow_sequence)
+        schedule.every().day.at("19:07").do(follow_sequence)
+        schedule.every().day.at("19:44").do(follow_sequence)
+        schedule.every().day.at("20:28").do(follow_sequence)
+        schedule.every().day.at("20:47").do(follow_sequence)
+        schedule.every().day.at("21:18").do(follow_sequence)
+        schedule.every().day.at("21:25").do(follow_sequence)
+        schedule.every().day.at("22:19").do(follow_sequence)
+        schedule.every().day.at("22:39").do(follow_sequence)
+        schedule.every().day.at("22:47").do(follow_sequence)
+        schedule.every().day.at("23:09").do(follow_sequence)
+        schedule.every().day.at("23:43").do(follow_sequence)
 
-            another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(another_random_user[0])
-            time.sleep(randint(3, 30))
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
-            yet_another_random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
-            pn_bot.follow_user(yet_another_random_user[0])
-            time.sleep(randint(3, 30))
-
-        pn_bot.infinite_scroll()
-        # pn_bot.kill_browser()
-        time.sleep(randint(5, 50))
+        # todo schedule the function calls
+        # todo push to github and restart the app
