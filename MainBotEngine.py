@@ -41,7 +41,7 @@ class PinterestBot:
         try:
             self.driver.find_element_by_xpath('//*[contains(@type,"submit")]').click()
 
-            print("login hopefully worked...")
+            print("login success...")
         except Exception as e:
             print("the login issue is: ", e)
             print(traceback.format_exc())
