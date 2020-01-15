@@ -28,7 +28,7 @@ class PinterestBot:
         self.login()
 
     def login(self):
-        print("logging you in....")
+        print("logging me in....")
 
         self.driver.get(f"{self.base_url}/login/")
         WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.NAME, "id")))
