@@ -190,12 +190,12 @@ class PinterestBot:
 
         try:
             self.driver.get(gls.pin_builder)
-            #title_xpath = '//*[contains(@id,"pin-draft-title")]'
+            # title_xpath = '//*[contains(@id,"pin-draft-title")]'
             desc_xpath = '//*[contains(@id,"pin-draft-description")]'
             dest_link_xpath = '//*[contains(@id,"pin-draft-link")]'
             publish_btn_xpath = '//*[contains(@data-test-id,"board-dropdown-save-button")]'
             board_selector = '//*[contains(@title,"Stuff to Buy")]'
-           # self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} PRIZES remain!")
+            # self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} PRIZES remain!")
             time.sleep(5)
             self.driver.find_element_by_xpath(desc_xpath).send_keys(single_desc)
             time.sleep(4)
