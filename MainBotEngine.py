@@ -82,7 +82,7 @@ class PinterestBot:
                 last_height = new_height
 
                 count += 1
-                if count == 100:
+                if count == 25:
                     break
 
         except Exception as em:
