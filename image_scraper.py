@@ -5,6 +5,8 @@ import os
 import io
 from PIL import Image
 import hashlib
+import glob
+from random import randint
 
 
 def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_between_interactions: int = 1):
@@ -65,7 +67,7 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_b
     return image_urls
 
 
-def persist_image(folder_path:str,url:str):
+def persist_image(folder_path: str, url: str):
     try:
         image_content = requests.get(url).content
 
@@ -75,7 +77,7 @@ def persist_image(folder_path:str,url:str):
     try:
         image_file = io.BytesIO(image_content)
         image = Image.open(image_file).convert('RGB')
-        file_path = os.path.join(folder_path,hashlib.sha1(image_content).hexdigest()[:10] + '.jpg')
+        file_path = os.path.join(folder_path, hashlib.sha1(image_content).hexdigest()[:10] + '.jpg')
         with open(file_path, 'wb') as f:
             image.save(f, "JPEG", quality=85)
         print(f"SUCCESS - saved {url} - as {file_path}")
@@ -96,5 +98,18 @@ def search_and_download(search_term: str, driver_path: str, target_path='./dld_i
         persist_image(target_folder, elem)
 
 
-if __name__ == "__main__":
-    search_and_download("food", './chromedriver', './dld_images', 75)
+# delete pre_existing images before you download new ones
+def delete_images():
+    for i in glob.glob("./dld_images/*.jpg"):
+        os.remove(i)
+    pass
+
+
+def main_image_scraper_fn():
+    print("deleting pre existing images")
+    delete_images()
+    print("image deletion done")
+    time.sleep(10)
+    print("downloading new images")
+    search_and_download(f"food {randint(1,100)}", './chromedriver', './dld_images', 75)
+    print("image download done")

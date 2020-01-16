@@ -33,26 +33,24 @@ def read_phrases_from_csv(my_csv):
         return list_of_phrases
 
 
-read_phrases_from_csv("phrases.csv")
+def main_image_optimiser_fun():
+    read_phrases_from_csv("phrases.csv")
 
-print(f'number of phrases: {len(list_of_phrases)}')
-print(f'number of images: {len(raw_image_list)}')
+    print(f'number of phrases: {len(list_of_phrases)}')
+    print(f'number of images: {len(raw_image_list)}')
 
-count = 0
-for single_image in raw_image_list:
-    print(f'processing {single_image}...')
-    random_desc = list_of_phrases[randint(0, len(list_of_phrases) - 1)]
-    image = Image.open(single_image)
-    newImage = image.resize((600, 900))
-    draw = ImageDraw.Draw(newImage)
-    font = ImageFont.truetype("./fonts/greatribes.ttf", 65)
-    draw.rectangle([0, 0, 600, 100], width=5, fill="#4F4F4F")
-    draw.text((70, 5), random_desc[0], fill=(240, 248, 255), font=font)
-    newImage.save(f'./processed_media/food/{"pin_image_"}{count}.jpg')
-    count += 1
+    count = 0
+    for single_image in raw_image_list:
+        print(f'processing {single_image}...')
+        random_desc = list_of_phrases[randint(0, len(list_of_phrases) - 1)]
+        image = Image.open(single_image)
+        new_image = image.resize((600, 900))
+        draw = ImageDraw.Draw(new_image)
+        font = ImageFont.truetype("./fonts/eternity.ttf", 65)
+        draw.rectangle([0, 0, 600, 100], width=5, fill="#4F4F4F")
+        draw.text((70, 5), random_desc[0], fill=(240, 248, 255), font=font)
+        new_image.save(f'./media/{"pin_image_"}{count}.jpg')
+        print(f'processing {single_image} done!')
+        count += 1
 
-    if count == 3:
-        break
-
-
-print("done")
+    print("scraping and optimisation done")
