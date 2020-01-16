@@ -444,11 +444,14 @@ class PinterestBot:
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("marlinx2020@protonmail.com", "E5XB!D2MerD!XGK")
 
     list_of_landers = ['https://cool-giveaways.weebly.com/',
-                       'https://amzn.to/2Fw2wcz',
-                       'https://amzn.to/36C970V',
+                       'https://win-150-dollars-now.weebly.com/',
+                       'https://freebie-heaven.weebly.com/',
+                       'https://win-google-pixel-now.weebly.com/',
+                       'https://win-nintendo-switch-now.weebly.com/',
+                       'https://win-a-fortune-today.weebly.com/',
                        'https://amzn.to/379FhAY'
                        ]
     list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
