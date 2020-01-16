@@ -19,7 +19,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--start-maximized")
@@ -276,7 +276,7 @@ class PinterestBot:
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@protonmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
 
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://amzn.to/2Fw2wcz',
@@ -302,7 +302,6 @@ if __name__ == "__main__":
         list_of_complements = pn_bot.read_complements_from_csv(gls.complements_csv)
         print(f'complement list size: {len(list_of_complements)}')
         pn_bot.image_link_extractor(list_of_complements)
-
 
     def custom_scheduler():
         # scheduling the pin and follow  and infinite scroll times
