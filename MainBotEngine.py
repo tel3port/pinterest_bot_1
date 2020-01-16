@@ -455,8 +455,8 @@ if __name__ == "__main__":
     links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
 
     def image_refresh_sequence():
-        list_of_search_terms = ["ice cream", "chocolate cake", " vanilla cake", "frozen yoghurt", "cookies", "custard",
-                                " pudding", 'custard', "coffee", "rock candy"]
+        list_of_search_terms = ["ice cream phone wallpaper", "chocolate cake phone wallpaper", " vanilla cake phone wallpaper", "frozen yoghurt phone wallpaper", "cookies phone wallpaper", "custard phone wallpaper",
+                                " pudding phone wallpaper", 'custard phone wallpaper', "coffee phone wallpaper", "rock candy phone wallpaper"]
         random_search_term = list_of_search_terms[randint(0, len(list_of_search_terms) - 1)]
         time.sleep(5)
         try:
