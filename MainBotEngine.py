@@ -235,7 +235,7 @@ class PinterestBot:
             time.sleep(5)
             self.driver.find_element_by_xpath(comment_label).click()
             time.sleep(5)
-            self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement)
+            self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement[0])
             time.sleep(7)
             self.driver.find_element_by_xpath(submit_comment_btn_xpath).click()
             print("commenting done!")
