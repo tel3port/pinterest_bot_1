@@ -1,16 +1,23 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-import time
 import csv
 import globals as gls
 import glob
-import os
 from random import randint
 import traceback
 import schedule
+import time
+import requests
+import os
+import io
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+import hashlib
 
 
 class PinterestBot:
@@ -19,7 +26,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--start-maximized")
@@ -164,6 +171,8 @@ class PinterestBot:
         finally:
             return complements_list
 
+    # -------------------- pinterest functionality section -----------------------------------------------------------------------
+
     def follow_user(self, user_link):
         print("follow user started")
         time.sleep(15)
@@ -273,10 +282,169 @@ class PinterestBot:
             print('image_commenter Error occurred ' + str(we))
             print(traceback.format_exc())
 
+    def fetch_image_urls(self, query: str, max_links_to_fetch: int, wd: webdriver, sleep_between_interactions: int = 1):
+        def scroll_to_end(wd):
+            wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(sleep_between_interactions)
+
+            # build the google query
+
+        # build the google query
+        search_url = 'https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img'
+
+        time.sleep(12)
+        # open tab
+        current = wd.current_window_handle
+        wd.execute_script("window.open();")
+        new_tab = [tab for tab in wd.window_handles if tab != current][0]
+        wd.switch_to.window(new_tab)
+        # You can use (Keys.CONTROL + 't') on other OSs
+        # load the page
+        time.sleep(12)
+        wd.get(search_url.format(q=query))
+
+        image_urls = set()
+        image_count = 0
+        results_start = 0
+        while image_count < max_links_to_fetch:
+            scroll_to_end(wd)
+
+            # get all image thumbnail results
+            thumbnail_results = wd.find_elements_by_css_selector("img.rg_ic")
+            number_results = len(thumbnail_results)
+
+            print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
+
+            for img in thumbnail_results[results_start:number_results]:
+                # try to click every thumbnail such that we can get the real image behind it
+                try:
+                    img.click()
+                    time.sleep(sleep_between_interactions)
+                except Exception as e:
+                    print("the problem is, ", str(e))
+                    continue
+
+                # extract image urls
+                actual_images = wd.find_elements_by_css_selector('img.irc_mi')
+                for actual_image in actual_images:
+                    if actual_image.get_attribute('src'):
+                        image_urls.add(actual_image.get_attribute('src'))
+
+                image_count = len(image_urls)
+
+                if len(image_urls) >= max_links_to_fetch:
+                    print(f"Found: {len(image_urls)} image links, done!")
+                    break
+            else:
+                print("Found:", len(image_urls), "image links, looking for more ...")
+                time.sleep(1)
+                load_more_button = wd.find_element_by_css_selector(".ksb")
+                if load_more_button:
+                    wd.execute_script("document.querySelector('.ksb').click();")
+
+            # move the result startpoint further down
+            results_start = len(thumbnail_results)
+
+            # close the tab
+            wd.close()
+        return image_urls
+
+# -------------------- image downloader section -----------------------------------------------------------------------
+    def persist_image(self, folder_path: str, url: str):
+        try:
+            image_content = requests.get(url).content
+
+        except Exception as e:
+            print(f"ERROR - Could not download {url} - {e}")
+
+        try:
+            image_file = io.BytesIO(image_content)
+            image = Image.open(image_file).convert('RGB')
+            file_path = os.path.join(folder_path, hashlib.sha1(image_content).hexdigest()[:10] + '.jpg')
+            with open(file_path, 'wb') as f:
+                image.save(f, "JPEG", quality=85)
+            print(f"SUCCESS - saved {url} - as {file_path}")
+        except Exception as e:
+            print(f"ERROR - Could not save {url} - {e}")
+
+    def search_and_download(self, search_term: str, driver_path: str, target_path='./dld_images', number_images=5):
+        target_folder = os.path.join(target_path, '_'.join(search_term.lower().split(' ')))
+        target_folder = './dld_images'
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder)
+
+        # with webdriver.Chrome(executable_path=driver_path) as wd:
+        res = self.fetch_image_urls(search_term, number_images, wd=self.driver, sleep_between_interactions=0.5)
+
+        for elem in res:
+            self.persist_image(target_folder, elem)
+
+# -------------------- image optimiser section -----------------------------------------------------------------------
+
+    def read_phrases_from_csv(self, my_csv):
+        list_of_phrases = []
+        try:
+            with open(my_csv, gls.read) as rdr:
+                reader = csv.reader(rdr, delimiter=",")
+                for single_row in reader:
+                    list_of_phrases.append(single_row)
+
+        except IOError as x:
+            print("problem reading the read_descs_from_csv csv", x)
+            print(traceback.format_exc())
+
+        except Exception as e:
+            print("the read_descs from csv problem is: ", str(e))
+            print(traceback.format_exc())
+
+        finally:
+            return list_of_phrases
+
+    def image_optimiser(self, my_csv):
+        try:
+            self.read_phrases_from_csv(my_csv)
+
+            raw_image_list = glob.glob('dld_images/*')
+            processed_image_list = glob.glob('media/*')
+            final_phrase_list = self.read_phrases_from_csv(gls.phrases_csv)
+
+            print(f'number of phrases: {len(final_phrase_list)}')
+            print(f'number of images: {len(raw_image_list)}')
+
+            count = 0
+            for single_image in raw_image_list:
+                print(f'processing {single_image}...')
+                random_desc = final_phrase_list[randint(0, len(final_phrase_list) - 1)]
+                image = Image.open(single_image)
+                new_image = image.resize((600, 900))
+                draw = ImageDraw.Draw(new_image)
+                font = ImageFont.truetype("./fonts/eternity.ttf", 30)
+                draw.rectangle([0, 0, 600, 100], width=5, fill="#4F4F4F")
+                draw.text((30, 5), random_desc[0], fill=(240, 248, 255), font=font)
+                new_image.save(f'./media/{"final_img_"}{count}.jpg')
+                count += 1
+
+            print(" image optimisation done")
+
+        except Exception as we:
+            print('image_optimiser Error occurred ' + str(we))
+            print(traceback.format_exc())
+
+    # -------------------- image refresher section -----------------------------------------------------------------------
+
+    def image_deleter(self):
+        try:
+            for i in glob.glob("./dld_images/*.jpg"):
+                os.remove(i)
+
+        except Exception as we:
+            print('image_deleter Error occurred ' + str(we))
+            print(traceback.format_exc())
+
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("marlinx2020@protonmail.com", "E5XB!D2MerD!XGK")
 
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://amzn.to/2Fw2wcz',
@@ -285,10 +453,24 @@ if __name__ == "__main__":
                        ]
     list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
     links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
-    image_list = glob.glob('media/*')
 
+    def image_refresh_sequence():
+        list_of_search_terms = ["ice cream", "chocolate cake", " vanilla cake", "frozen yoghurt", "cookies", "custard",
+                                " pudding", 'custard', "coffee", "rock candy"]
+        random_search_term = list_of_search_terms[randint(0, len(list_of_search_terms) - 1)]
+        time.sleep(5)
+        try:
+            pn_bot.search_and_download(random_search_term, './chromedriver', './dld_images', 75)
+            time.sleep(10)
+            pn_bot.image_optimiser(gls.phrases_csv)
+            pn_bot.image_deleter()
+
+        except Exception as we:
+            print('image_refresh_sequence Error occurred ' + str(we))
+            print(traceback.format_exc())
 
     def pin_image_sequence():
+        image_list = glob.glob('media/*')
         random_image = image_list[randint(0, len(image_list) - 1)]
         random_lander = list_of_landers[randint(0, len(list_of_landers) - 1)]
         random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
@@ -306,6 +488,10 @@ if __name__ == "__main__":
     def custom_scheduler():
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
+
+        schedule.every().tuesday.at("03:03").do(pin_image_sequence)
+        schedule.every().thursday.at("03:21").do(pin_image_sequence)
+        schedule.every().saturday.at("03:57").do(pin_image_sequence)
 
         schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
         schedule.every().day.at("09:10").do(comment_sequence)
