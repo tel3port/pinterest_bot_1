@@ -52,6 +52,7 @@ class PinterestBot:
         except Exception as e:
             print("the login issue is: ", e)
             print(traceback.format_exc())
+            pass
 
     def infinite_scroll(self):
         print("starting infinite scroll")
@@ -81,12 +82,13 @@ class PinterestBot:
                 last_height = new_height
 
                 count += 1
-                if count == 25:
+                if count == randint(1, 7):
                     break
 
         except Exception as em:
             print('infinite_scroll Error occurred ' + str(em))
             print(traceback.format_exc())
+            pass
 
         finally:
             print(" infinite_scroll() done")
@@ -103,6 +105,7 @@ class PinterestBot:
         except Exception as em:
             print('append_to_csv Error occurred ' + str(em))
             print(traceback.format_exc())
+            pass
 
         finally:
             print(" append_to_csv() done")
@@ -121,10 +124,12 @@ class PinterestBot:
         except IOError as x:
             print("read_links_from_csv problem reading the user_accounts csv", x)
             print(traceback.format_exc())
+            pass
 
         except Exception as e:
             print("read_links_from_csv the problem is: ", e)
             print(traceback.format_exc())
+            pass
 
         finally:
             print("number of links: ", len(list_of_links))
@@ -142,10 +147,12 @@ class PinterestBot:
         except IOError as x:
             print("problem reading the read_descs_from_csv csv", x)
             print(traceback.format_exc())
+            pass
 
         except Exception as e:
             print("the read_descs from csv problem is: ", str(e))
             print(traceback.format_exc())
+            pass
 
         finally:
             return list_of_descriptions
@@ -162,10 +169,12 @@ class PinterestBot:
         except IOError as x:
             print("problem reading the read_descs_from_csv csv", x)
             print(traceback.format_exc())
+            pass
 
         except Exception as e:
             print("the read_descs from csv problem is: ", str(e))
             print(traceback.format_exc())
+            pass
 
         finally:
             return complements_list
@@ -189,6 +198,7 @@ class PinterestBot:
         except Exception as e:
             print("follow user issue, ", e)
             print(traceback.format_exc())
+            pass
 
     def pin_image(self, single_desc, single_link, single_image):
         print("pin image start")
@@ -222,6 +232,7 @@ class PinterestBot:
         except Exception as e:
             print("pin_image problem is at ", e)
             print(traceback.format_exc())
+            pass
 
     def image_commenter(self, pin_link, list_complements):
         print('xxxxxx  pin_link xxxxxxxx')
@@ -274,7 +285,7 @@ class PinterestBot:
                     time.sleep(15)
 
                 count += 1
-                if count == 20:
+                if count == randint(7, 20):
                     break
 
             links_set.clear()
@@ -365,6 +376,7 @@ class PinterestBot:
 
         except Exception as e:
             print(f"ERROR - Could not download {url} - {e}")
+            pass
 
         try:
             image_file = io.BytesIO(image_content)
@@ -375,6 +387,7 @@ class PinterestBot:
             print(f"SUCCESS - saved {url} - as {file_path}")
         except Exception as e:
             print(f"ERROR - Could not save {url} - {e}")
+            pass
 
     def search_and_download(self, search_term: str, driver_path: str, target_path='./dld_images', number_images=5):
         target_folder = os.path.join(target_path, '_'.join(search_term.lower().split(' ')))
@@ -402,10 +415,12 @@ class PinterestBot:
         except IOError as x:
             print("problem reading the read_descs_from_csv csv", x)
             print(traceback.format_exc())
+            pass
 
         except Exception as e:
             print("the read_descs from csv problem is: ", str(e))
             print(traceback.format_exc())
+            pass
 
         finally:
             return list_of_phrases
@@ -428,7 +443,7 @@ class PinterestBot:
                 image = Image.open(single_image)
                 new_image = image.resize((600, 900))
                 draw = ImageDraw.Draw(new_image)
-                font = ImageFont.truetype("./fonts/eternity.ttf", 75)
+                font = ImageFont.truetype("./fonts/eternity.ttf", 65)
                 draw.rectangle([0, 0, 600, 100], width=5, fill=(randint(0, 255), randint(0, 255), randint(0, 255)), )
                 draw.text((70, 5), random_desc[0], fill=(randint(0, 255), randint(0, 255), randint(0, 255)), font=font)
                 new_image.save(f'./media/{"final_img_"}{count}.jpg')
@@ -439,6 +454,7 @@ class PinterestBot:
         except Exception as we:
             print('image_optimiser Error occurred ' + str(we))
             print(traceback.format_exc())
+            pass
 
     # -------------------- image refresher section -----------------------------------------------------------------------
 
@@ -451,6 +467,7 @@ class PinterestBot:
         except Exception as we:
             print('image_deleter Error occurred ' + str(we))
             print(traceback.format_exc())
+            pass
 
     # -------------------- bot's entry point -----------------------------------------------------------------------
 
@@ -484,6 +501,7 @@ if __name__ == "__main__":
         except Exception as we:
             print('image_refresh_sequence Error occurred ' + str(we))
             print(traceback.format_exc())
+            pass
 
     def pin_image_sequence():
         image_list = glob.glob('media/*')
@@ -505,9 +523,9 @@ if __name__ == "__main__":
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
 
-        schedule.every().tuesday.at("03:03").do(pin_image_sequence)
-        schedule.every().thursday.at("03:21").do(pin_image_sequence)
-        schedule.every().saturday.at("03:57").do(pin_image_sequence)
+        schedule.every().tuesday.at("03:03").do(image_refresh_sequence)
+        schedule.every().thursday.at("03:21").do(image_refresh_sequence)
+        schedule.every().saturday.at("03:57").do(image_refresh_sequence)
 
         schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
         schedule.every().day.at("09:10").do(comment_sequence)
@@ -570,11 +588,15 @@ if __name__ == "__main__":
             schedule.run_pending()
             time.sleep(1)
 
-    def run_locally():
-        image_refresh_sequence()
-        comment_sequence()
-        pin_image_sequence()
-        follow_sequence()
+    # def run_locally():
+    #     for _ in range(5):
+    #         pn_bot.infinite_scroll()
+    #         comment_sequence()
+    #         image_refresh_sequence()
+    #         pin_image_sequence()
+    #         follow_sequence()
+    #
+    # run_locally()
+    # print("test done")
 
-    run_locally()
-    # custom_scheduler()
+    custom_scheduler()
