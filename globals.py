@@ -6,6 +6,7 @@ user_accounts_csv = "user_accounts.csv"
 descs_csv = "descs.csv"
 complements_csv = "complements.csv"
 phrases_csv = "phrases.csv"
+generic_dm = "New to pinterest. Want a follow for a follow? I really want an awesome pinterest following like yours!"
 
 write = 'w'
 read = "r"
