@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
@@ -26,7 +25,7 @@ class PinterestBot:
         self.password = password
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--start-maximized")
@@ -272,6 +271,8 @@ class PinterestBot:
                 if 'pinterest.com/pin/' in single_link:
                     self.image_commenter(single_link, list_complements)
 
+                    time.sleep(15)
+
                 count += 1
                 if count == 20:
                     break
@@ -281,8 +282,12 @@ class PinterestBot:
         except Exception as we:
             print('image_commenter Error occurred ' + str(we))
             print(traceback.format_exc())
+            pass
 
-    def fetch_image_urls(self, query: str, max_links_to_fetch: int, wd: webdriver, sleep_between_interactions: int = 1):
+    # -------------------- image downloader section -----------------------------------------------------------------------
+
+    @staticmethod
+    def fetch_image_urls(query: str, max_links_to_fetch: int, wd: webdriver, sleep_between_interactions: int = 1):
         def scroll_to_end(wd):
             wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(sleep_between_interactions)
@@ -293,6 +298,7 @@ class PinterestBot:
         search_url = 'https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img'
 
         time.sleep(12)
+
         # open tab
         current = wd.current_window_handle
         wd.execute_script("window.open();")
@@ -347,10 +353,13 @@ class PinterestBot:
 
             # close the tab
             wd.close()
+
+            wd.switch_to.window(current)
+
         return image_urls
 
-# -------------------- image downloader section -----------------------------------------------------------------------
-    def persist_image(self, folder_path: str, url: str):
+    @staticmethod
+    def persist_image(folder_path: str, url: str):
         try:
             image_content = requests.get(url).content
 
@@ -381,7 +390,8 @@ class PinterestBot:
 
 # -------------------- image optimiser section -----------------------------------------------------------------------
 
-    def read_phrases_from_csv(self, my_csv):
+    @staticmethod
+    def read_phrases_from_csv(my_csv):
         list_of_phrases = []
         try:
             with open(my_csv, gls.read) as rdr:
@@ -405,7 +415,7 @@ class PinterestBot:
             self.read_phrases_from_csv(my_csv)
 
             raw_image_list = glob.glob('dld_images/*')
-            processed_image_list = glob.glob('media/*')
+            # processed_image_list = glob.glob('media/*')
             final_phrase_list = self.read_phrases_from_csv(gls.phrases_csv)
 
             print(f'number of phrases: {len(final_phrase_list)}')
@@ -418,7 +428,7 @@ class PinterestBot:
                 image = Image.open(single_image)
                 new_image = image.resize((600, 900))
                 draw = ImageDraw.Draw(new_image)
-                font = ImageFont.truetype("./fonts/eternity.ttf", 30)
+                font = ImageFont.truetype("./fonts/eternity.ttf", 75)
                 draw.rectangle([0, 0, 600, 100], width=5, fill=(randint(0, 255), randint(0, 255), randint(0, 255)), )
                 draw.text((70, 5), random_desc[0], fill=(randint(0, 255), randint(0, 255), randint(0, 255)), font=font)
                 new_image.save(f'./media/{"final_img_"}{count}.jpg')
@@ -432,7 +442,8 @@ class PinterestBot:
 
     # -------------------- image refresher section -----------------------------------------------------------------------
 
-    def image_deleter(self):
+    @staticmethod
+    def image_deleter():
         try:
             for i in glob.glob("./dld_images/*.jpg"):
                 os.remove(i)
@@ -441,10 +452,12 @@ class PinterestBot:
             print('image_deleter Error occurred ' + str(we))
             print(traceback.format_exc())
 
+    # -------------------- bot's entry point -----------------------------------------------------------------------
+
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("marlinx2020@protonmail.com", "E5XB!D2MerD!XGK")
 
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://win-150-dollars-now.weebly.com/',
@@ -557,4 +570,11 @@ if __name__ == "__main__":
             schedule.run_pending()
             time.sleep(1)
 
-    custom_scheduler()
+    def run_locally():
+        image_refresh_sequence()
+        comment_sequence()
+        pin_image_sequence()
+        follow_sequence()
+
+    run_locally()
+    # custom_scheduler()
