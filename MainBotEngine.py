@@ -468,7 +468,7 @@ class PinterestBot:
                 new_image = image.resize((600, 900))
                 draw = ImageDraw.Draw(new_image)
                 font = ImageFont.truetype("./fonts/eternity.ttf", 65)
-                draw.rectangle([0, 0, 600, 150], width=5, fill=(randint(0, 255), randint(0, 255), randint(0, 255)), )
+                draw.rectangle([0, 0, 600, 151], width=5, fill=(randint(0, 255), randint(0, 255), randint(0, 255)), )
                 draw.text((70, 5), random_desc[0], fill=(randint(0, 255), randint(0, 255), randint(0, 255)), font=font)
                 new_image.save(f'./media/{"final_img_"}{count}.jpg')
                 count += 1
