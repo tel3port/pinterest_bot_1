@@ -258,35 +258,7 @@ class PinterestBot:
             print(traceback.format_exc())
             pass
 
-    def image_commenter(self, pin_link, list_complements):
-        print('xxxxxx  pin_link xxxxxxxx')
-        random_complement = list_complements[randint(0, len(list_complements) - 1)]
-        print(random_complement)
-        print(pin_link)
-
-        comment_tab_xpath = '//*[contains(@data-test-id,"canonicalCommentsTab")]'
-        comment_label = '//*[contains(@name,"communityItemTextBox")]'
-        comment_textbox = '//*[contains(@data-test-id,"mentionsInput")]'
-        submit_comment_btn_xpath = '//*[contains(@data-test-id,"activity-item-create-submit")]'
-
-        try:
-            self.driver.get(pin_link)
-
-            tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, comment_tab_xpath)))
-            time.sleep(5)
-            tab.click()
-            time.sleep(5)
-            self.driver.find_element_by_xpath(comment_label).click()
-            time.sleep(5)
-            self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement)
-            time.sleep(7)
-            self.driver.find_element_by_xpath(submit_comment_btn_xpath).click()
-            print("commenting done!")
-        except Exception as we:
-            print('image_commenter Error occurred ' + str(we))
-            print(traceback.format_exc())
-
-    def image_link_extractor(self, list_complements):
+    def pin_link_extractor(self, list_complements):
         links_set = set()
         try:
             time.sleep(7)
@@ -318,6 +290,34 @@ class PinterestBot:
             print('image_commenter Error occurred ' + str(we))
             print(traceback.format_exc())
             pass
+
+    def image_commenter(self, pin_link, list_complements):
+        print('xxxxxx  pin_link xxxxxxxx')
+        random_complement = list_complements[randint(0, len(list_complements) - 1)]
+        print(random_complement)
+        print(pin_link)
+
+        comment_tab_xpath = '//*[contains(@data-test-id,"canonicalCommentsTab")]'
+        comment_label = '//*[contains(@name,"communityItemTextBox")]'
+        comment_textbox = '//*[contains(@data-test-id,"mentionsInput")]'
+        submit_comment_btn_xpath = '//*[contains(@data-test-id,"activity-item-create-submit")]'
+
+        try:
+            self.driver.get(pin_link)
+
+            tab = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, comment_tab_xpath)))
+            time.sleep(5)
+            tab.click()
+            time.sleep(5)
+            self.driver.find_element_by_xpath(comment_label).click()
+            time.sleep(5)
+            self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement)
+            time.sleep(7)
+            self.driver.find_element_by_xpath(submit_comment_btn_xpath).click()
+            print("commenting done!")
+        except Exception as we:
+            print('image_commenter Error occurred ' + str(we))
+            print(traceback.format_exc())
 
     # -------------------- image downloader section -----------------------------------------------------------------------
 
@@ -511,6 +511,7 @@ if __name__ == "__main__":
     list_of_descs = pn_bot.read_descs_from_csv(gls.descs_csv)
     links_to_follow = pn_bot.read_links_from_csv(gls.user_accounts_csv)
 
+    # refreshes images 3 times a week
     def image_refresh_sequence():
         list_of_search_terms = ["ice cream phone wallpaper", "chocolate cake phone wallpaper", " vanilla cake phone wallpaper", "frozen yoghurt phone wallpaper", "cookies phone wallpaper", "custard phone wallpaper",
                                 " pudding phone wallpaper", 'custard phone wallpaper', "coffee phone wallpaper", "rock candy phone wallpaper"]
@@ -527,6 +528,7 @@ if __name__ == "__main__":
             print(traceback.format_exc())
             pass
 
+    # pins to account
     def pin_image_sequence():
         image_list = glob.glob('media/*')
         random_image = image_list[randint(0, len(image_list) - 1)]
@@ -534,15 +536,18 @@ if __name__ == "__main__":
         random_desc = list_of_descs[randint(0, len(list_of_descs) - 1)]
         pn_bot.pin_image(random_desc, random_lander, random_image)
 
+    # follows  and dms users from the csv
     def follow_sequence():
         random_user = links_to_follow[randint(0, len(links_to_follow) - 1)]
         pn_bot.follow_user(random_user[0])
 
+    # comments on pins of people being followed
     def comment_sequence():
         list_of_complements = pn_bot.read_complements_from_csv(gls.complements_csv)
         print(f'complement list size: {len(list_of_complements)}')
-        pn_bot.image_link_extractor(list_of_complements)
+        pn_bot.pin_link_extractor(list_of_complements)
 
+    # schedules when the above actions should be done
     def custom_scheduler():
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
@@ -612,6 +617,7 @@ if __name__ == "__main__":
             schedule.run_pending()
             time.sleep(1)
 
+    # FOR LOCAL TESTING ONLY
     # def run_locally():
     #     for _ in range(5):
     #         pn_bot.infinite_scroll()
