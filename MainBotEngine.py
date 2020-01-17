@@ -58,7 +58,7 @@ class PinterestBot:
         print("starting infinite scroll")
         time.sleep(10)
         try:
-            self.driver.get('https://www.pinterest.com/homefeed/')
+            self.driver.get('https://www.pinterest.com/following/')
             count = 0
             scroll_pause_time = 30
 
@@ -266,7 +266,7 @@ class PinterestBot:
         links_set = set()
         try:
             time.sleep(7)
-            self.driver.get('https://www.pinterest.com/homefeed/')
+            self.driver.get('https://www.pinterest.com/following/')
 
             time.sleep(5)
             results = self.driver.find_elements_by_xpath('//a[@href]')
