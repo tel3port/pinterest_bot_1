@@ -619,15 +619,15 @@ if __name__ == "__main__":
             time.sleep(1)
 
     #  FOR LOCAL TESTING ONLY
-    def run_locally():
-        for _ in range(5):
-            pn_bot.infinite_scroll()
-            comment_sequence()
-            image_refresh_sequence()
-            pin_image_sequence()
-            follow_sequence()
+    # def run_locally():
+    #     for _ in range(5):
+    #         pn_bot.infinite_scroll()
+    #         comment_sequence()
+    #         image_refresh_sequence()
+    #         pin_image_sequence()
+    #         follow_sequence()
+    #
+    # run_locally()
+    # print("test done")
 
-    run_locally()
-    print("test done")
-
-    # custom_scheduler()
+    custom_scheduler()
