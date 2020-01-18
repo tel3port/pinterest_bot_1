@@ -37,15 +37,15 @@ class PinterestBot:
     def login(self):
         print("logging me in....")
 
-        self.driver.get(f"{self.base_url}/login/")
-        WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.NAME, "id")))
-
-        # fill up the credential fields
-        self.driver.find_element_by_name('id').send_keys(self.username)
-        self.driver.find_element_by_name('password').send_keys(self.password)
-
-        # click login button
         try:
+
+            self.driver.get(f"{self.base_url}/login/")
+            WebDriverWait(self.driver, 25).until(EC.element_to_be_clickable((By.NAME, "id")))
+
+            # fill up the credential fields
+            self.driver.find_element_by_name('id').send_keys(self.username)
+            self.driver.find_element_by_name('password').send_keys(self.password)
+
             self.driver.find_element_by_xpath('//*[contains(@type,"submit")]').click()
 
             print("login success...")
