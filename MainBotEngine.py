@@ -60,7 +60,7 @@ class PinterestBot:
         try:
             self.driver.get('https://www.pinterest.com/following/')
             count = 0
-            scroll_pause_time = 30
+            scroll_pause_time = 6
 
             # Get scroll height
             last_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -281,7 +281,7 @@ class PinterestBot:
                     time.sleep(15)
 
                 count += 1
-                if count == randint(7, 20):
+                if count == randint(5, 10):
                     break
 
             links_set.clear()
@@ -314,6 +314,7 @@ class PinterestBot:
             self.driver.find_element_by_xpath(comment_textbox).send_keys(random_complement)
             time.sleep(7)
             self.driver.find_element_by_xpath(submit_comment_btn_xpath).click()
+            time.sleep(15)
             print("commenting done!")
         except Exception as we:
             print('image_commenter Error occurred ' + str(we))
@@ -562,71 +563,71 @@ if __name__ == "__main__":
         schedule.every().day.at("11:23").do(comment_sequence)
 
         schedule.every().day.at("12:01").do(pin_image_sequence)
-        schedule.every().day.at("12:37").do(pin_image_sequence)
-        schedule.every().day.at("13:05").do(pin_image_sequence)
-        schedule.every().day.at("13:44").do(pin_image_sequence)
-        schedule.every().day.at("14:07").do(pin_image_sequence)
-        schedule.every().day.at("14:55").do(pin_image_sequence)
-        schedule.every().day.at("15:03").do(pin_image_sequence)
-        schedule.every().day.at("15:39").do(pin_image_sequence)
-        schedule.every().day.at("16:16").do(pin_image_sequence)
-        schedule.every().day.at("16:40").do(pin_image_sequence)
-        schedule.every().day.at("17:10").do(pin_image_sequence)
-        schedule.every().day.at("17:53").do(pin_image_sequence)
-        schedule.every().day.at("18:25").do(pin_image_sequence)
-        schedule.every().day.at("18:45").do(pin_image_sequence)
-        schedule.every().day.at("19:02").do(pin_image_sequence)
-        schedule.every().day.at("19:37").do(pin_image_sequence)
-        schedule.every().day.at("20:22").do(pin_image_sequence)
-        schedule.every().day.at("20:44").do(pin_image_sequence)
-        schedule.every().day.at("21:11").do(pin_image_sequence)
-        schedule.every().day.at("21:20").do(pin_image_sequence)
-        schedule.every().day.at("22:15").do(pin_image_sequence)
-        schedule.every().day.at("22:30").do(pin_image_sequence)
-        schedule.every().day.at("22:44").do(pin_image_sequence)
+        schedule.every().day.at("12:31").do(pin_image_sequence)
+        schedule.every().day.at("13:01").do(pin_image_sequence)
+        schedule.every().day.at("13:31").do(pin_image_sequence)
+        schedule.every().day.at("14:01").do(pin_image_sequence)
+        schedule.every().day.at("14:31").do(pin_image_sequence)
+        schedule.every().day.at("15:01").do(pin_image_sequence)
+        schedule.every().day.at("15:31").do(pin_image_sequence)
+        schedule.every().day.at("16:01").do(pin_image_sequence)
+        schedule.every().day.at("16:31").do(pin_image_sequence)
+        schedule.every().day.at("17:01").do(pin_image_sequence)
+        schedule.every().day.at("17:31").do(pin_image_sequence)
+        schedule.every().day.at("18:01").do(pin_image_sequence)
+        schedule.every().day.at("18:31").do(pin_image_sequence)
+        schedule.every().day.at("19:01").do(pin_image_sequence)
+        schedule.every().day.at("19:31").do(pin_image_sequence)
+        schedule.every().day.at("20:01").do(pin_image_sequence)
+        schedule.every().day.at("20:31").do(pin_image_sequence)
+        schedule.every().day.at("21:01").do(pin_image_sequence)
+        schedule.every().day.at("21:31").do(pin_image_sequence)
+        schedule.every().day.at("22:01").do(pin_image_sequence)
+        schedule.every().day.at("22:31").do(pin_image_sequence)
+        schedule.every().day.at("22:01").do(pin_image_sequence)
+        schedule.every().day.at("23:31").do(pin_image_sequence)
         schedule.every().day.at("23:01").do(pin_image_sequence)
-        schedule.every().day.at("23:40").do(pin_image_sequence)
 
-        schedule.every().day.at("12:07").do(follow_sequence)
-        schedule.every().day.at("12:35").do(follow_sequence)
-        schedule.every().day.at("13:12").do(follow_sequence)
-        schedule.every().day.at("13:45").do(follow_sequence)
-        schedule.every().day.at("14:13").do(follow_sequence)
-        schedule.every().day.at("14:57").do(follow_sequence)
-        schedule.every().day.at("15:13").do(follow_sequence)
-        schedule.every().day.at("15:42").do(follow_sequence)
-        schedule.every().day.at("16:22").do(follow_sequence)
+        schedule.every().day.at("12:23").do(follow_sequence)
+        schedule.every().day.at("12:44").do(follow_sequence)
+        schedule.every().day.at("13:23").do(follow_sequence)
+        schedule.every().day.at("13:44").do(follow_sequence)
+        schedule.every().day.at("14:23").do(follow_sequence)
+        schedule.every().day.at("14:44").do(follow_sequence)
+        schedule.every().day.at("15:23").do(follow_sequence)
+        schedule.every().day.at("15:44").do(follow_sequence)
+        schedule.every().day.at("16:23").do(follow_sequence)
         schedule.every().day.at("16:44").do(follow_sequence)
-        schedule.every().day.at("17:15").do(follow_sequence)
-        schedule.every().day.at("17:57").do(follow_sequence)
-        schedule.every().day.at("18:29").do(follow_sequence)
-        schedule.every().day.at("18:49").do(follow_sequence)
-        schedule.every().day.at("19:07").do(follow_sequence)
+        schedule.every().day.at("17:23").do(follow_sequence)
+        schedule.every().day.at("17:44").do(follow_sequence)
+        schedule.every().day.at("18:23").do(follow_sequence)
+        schedule.every().day.at("18:44").do(follow_sequence)
+        schedule.every().day.at("19:23").do(follow_sequence)
         schedule.every().day.at("19:44").do(follow_sequence)
-        schedule.every().day.at("20:28").do(follow_sequence)
-        schedule.every().day.at("20:47").do(follow_sequence)
-        schedule.every().day.at("21:18").do(follow_sequence)
-        schedule.every().day.at("21:25").do(follow_sequence)
-        schedule.every().day.at("22:19").do(follow_sequence)
-        schedule.every().day.at("22:39").do(follow_sequence)
-        schedule.every().day.at("22:47").do(follow_sequence)
-        schedule.every().day.at("23:09").do(follow_sequence)
-        schedule.every().day.at("23:43").do(follow_sequence)
+        schedule.every().day.at("20:23").do(follow_sequence)
+        schedule.every().day.at("20:44").do(follow_sequence)
+        schedule.every().day.at("21:23").do(follow_sequence)
+        schedule.every().day.at("21:44").do(follow_sequence)
+        schedule.every().day.at("22:23").do(follow_sequence)
+        schedule.every().day.at("22:44").do(follow_sequence)
+        schedule.every().day.at("22:23").do(follow_sequence)
+        schedule.every().day.at("23:44").do(follow_sequence)
+        schedule.every().day.at("23:23").do(follow_sequence)
 
         while True:
             schedule.run_pending()
             time.sleep(1)
 
-    # FOR LOCAL TESTING ONLY
-    # def run_locally():
-    #     for _ in range(5):
-    #         pn_bot.infinite_scroll()
-    #         comment_sequence()
-    #         image_refresh_sequence()
-    #         pin_image_sequence()
-    #         follow_sequence()
-    #
-    # run_locally()
-    # print("test done")
+    #  FOR LOCAL TESTING ONLY
+    def run_locally():
+        for _ in range(5):
+            pn_bot.infinite_scroll()
+            comment_sequence()
+            image_refresh_sequence()
+            pin_image_sequence()
+            follow_sequence()
 
-    custom_scheduler()
+    run_locally()
+    print("test done")
+
+    # custom_scheduler()
