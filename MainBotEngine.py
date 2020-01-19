@@ -23,6 +23,8 @@ class PinterestBot:
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        self.random_search_term = gls.random_search_term()
+        self.random_emotion = gls.random_emotion()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--headless")
@@ -66,6 +68,7 @@ class PinterestBot:
             last_height = self.driver.execute_script("return document.body.scrollHeight")
             time.sleep(3)
 
+            random_num = randint(5, 8)
             while True:
                 # Scroll down to bottom
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -82,7 +85,8 @@ class PinterestBot:
                 last_height = new_height
 
                 count += 1
-                if count == randint(1, 7):
+                print(f'number of scrolls', count)
+                if count == random_num:
                     break
 
         except Exception as em:
@@ -180,6 +184,9 @@ class PinterestBot:
             return complements_list
 
     # -------------------- pinterest functionality section -----------------------------------------------------------------------
+    # TODO create boards dynamically and check if they exist before creation
+    def board_creator(self):
+        pass
 
     def follow_user(self, user_link):
         print("follow user started")
@@ -230,14 +237,15 @@ class PinterestBot:
 
         try:
             self.driver.get(gls.pin_builder)
-            # title_xpath = '//*[contains(@id,"pin-draft-title")]'
+            title_xpath = '//*[contains(@placeholder,"Add your title")]'
             desc_xpath = '//*[contains(@id,"pin-draft-description")]'
             dest_link_xpath = '//*[contains(@id,"pin-draft-link")]'
             publish_btn_xpath = '//*[contains(@data-test-id,"board-dropdown-save-button")]'
-            board_selector = '//*[contains(@title,"Stuff to Buy")]'
-            # self.driver.find_element_by_xpath(title_xpath).send_keys(f"Today's giveaway.ONLY {randint(3,23)} PRIZES remain!")
+            board_selector = f'//*[contains(@title,"{self.random_search_term}")]'
+
+            self.driver.find_element_by_xpath(title_xpath).send_keys(f'I{self.random_emotion}{self.random_search_term}')
             time.sleep(5)
-            self.driver.find_element_by_xpath(desc_xpath).send_keys(single_desc)
+            self.driver.find_element_by_xpath(desc_xpath).send_keys(f'{self.random_search_term}! {single_desc}')
             time.sleep(4)
             self.driver.find_element_by_xpath(dest_link_xpath).send_keys(single_link)
             time.sleep(7)
@@ -274,14 +282,16 @@ class PinterestBot:
                 links_set.add(final_link)
 
             count = 0
+            random_num = randint(3, 7)
             for single_link in list(links_set):
                 if 'pinterest.com/pin/' in single_link:
                     self.image_commenter(single_link, list_complements)
 
-                    time.sleep(15)
+                    time.sleep(randint(10, 15))
 
                 count += 1
-                if count == randint(5, 10):
+                print("number of comments", count)
+                if count == random_num:
                     break
 
             links_set.clear()
@@ -349,48 +359,55 @@ class PinterestBot:
         image_count = 0
         results_start = 0
         while image_count < max_links_to_fetch:
-            scroll_to_end(wd)
+            try:
+                scroll_to_end(wd)
 
-            # get all image thumbnail results
-            thumbnail_results = wd.find_elements_by_css_selector("img.rg_ic")
-            number_results = len(thumbnail_results)
+                # get all image thumbnail results
+                thumbnail_results = wd.find_elements_by_css_selector("img.rg_ic")
+                number_results = len(thumbnail_results)
 
-            print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
+                print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
 
-            for img in thumbnail_results[results_start:number_results]:
-                # try to click every thumbnail such that we can get the real image behind it
-                try:
-                    img.click()
-                    time.sleep(sleep_between_interactions)
-                except Exception as e:
-                    print("the problem is, ", str(e))
-                    continue
+                for img in thumbnail_results[results_start:number_results]:
+                    # try to click every thumbnail such that we can get the real image behind it
+                    try:
+                        img.click()
+                        time.sleep(sleep_between_interactions)
+                    except Exception as e:
+                        print("the problem is, ", str(e))
+                        continue
 
-                # extract image urls
-                actual_images = wd.find_elements_by_css_selector('img.irc_mi')
-                for actual_image in actual_images:
-                    if actual_image.get_attribute('src'):
-                        image_urls.add(actual_image.get_attribute('src'))
+                    # extract image urls
+                    actual_images = wd.find_elements_by_css_selector('img.irc_mi')
+                    for actual_image in actual_images:
+                        if actual_image.get_attribute('src'):
+                            image_urls.add(actual_image.get_attribute('src'))
 
-                image_count = len(image_urls)
+                    image_count = len(image_urls)
 
-                if len(image_urls) >= max_links_to_fetch:
-                    print(f"Found: {len(image_urls)} image links, done!")
-                    break
-            else:
-                print("Found:", len(image_urls), "image links, looking for more ...")
-                time.sleep(1)
-                load_more_button = wd.find_element_by_css_selector(".ksb")
-                if load_more_button:
-                    wd.execute_script("document.querySelector('.ksb').click();")
+                    if len(image_urls) >= max_links_to_fetch:
+                        print(f"Found: {len(image_urls)} image links, done!")
+                        break
+                else:
+                    print("Found:", len(image_urls), "image links, looking for more ...")
+                    time.sleep(1)
+                    load_more_button = wd.find_element_by_css_selector(".ksb")
+                    if load_more_button:
+                        wd.execute_script("document.querySelector('.ksb').click();")
 
-            # move the result startpoint further down
-            results_start = len(thumbnail_results)
+                # move the result startpoint further down
+                results_start = len(thumbnail_results)
+
+            except Exception as we:
+                print('image_refresh_sequence Error occurred ' + str(we))
+                print(traceback.format_exc())
+                pass
 
             # close the tab
-            wd.close()
+            finally:
+                wd.close()
 
-            wd.switch_to.window(current)
+                wd.switch_to.window(current)
 
         return image_urls
 
@@ -500,7 +517,7 @@ class PinterestBot:
 if __name__ == "__main__":
 
     pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
-
+    print(f'search term in play: {pn_bot.random_search_term}')
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://win-150-dollars-now.weebly.com/',
                        'https://freebie-heaven.weebly.com/',
@@ -514,12 +531,9 @@ if __name__ == "__main__":
 
     # refreshes images 3 times a week
     def image_refresh_sequence():
-        list_of_search_terms = ["ice cream phone wallpaper", "chocolate cake phone wallpaper", " vanilla cake phone wallpaper", "frozen yoghurt phone wallpaper", "cookies phone wallpaper", "custard phone wallpaper",
-                                " pudding phone wallpaper", 'custard phone wallpaper', "coffee phone wallpaper", "rock candy phone wallpaper"]
-        random_search_term = list_of_search_terms[randint(0, len(list_of_search_terms) - 1)]
         time.sleep(5)
         try:
-            pn_bot.search_and_download(random_search_term, './chromedriver', './dld_images', 75)
+            pn_bot.search_and_download(pn_bot.random_search_term, './chromedriver', './dld_images', 75)
             time.sleep(10)
             pn_bot.image_optimiser(gls.phrases_csv)
             pn_bot.image_deleter()
@@ -621,11 +635,11 @@ if __name__ == "__main__":
     #  FOR LOCAL TESTING ONLY
     # def run_locally():
     #     for _ in range(5):
-    #         pn_bot.infinite_scroll()
-    #         comment_sequence()
-    #         image_refresh_sequence()
+    #         # pn_bot.infinite_scroll()
+    #         # comment_sequence()
+    #         # image_refresh_sequence()
     #         pin_image_sequence()
-    #         follow_sequence()
+    #         # follow_sequence()
     #
     # run_locally()
     # print("test done")

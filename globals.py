@@ -13,6 +13,22 @@ read = "r"
 append = 'a'
 pin_builder = 'https://www.pinterest.com/pin-builder/'
 follower_source = 'https://www.pinterest.com/technews24h/_community/'
+board_creator = 'https://www.pinterest.com/marlinx2020/boards/'
+
+
+def random_search_term():
+    list_of_search_terms = ["ice cream phone wallpaper", "chocolate cake phone wallpaper", "vanilla cake phone wallpaper",
+                            "frozen yoghurt phone wallpaper", "cookies phone wallpaper", "custard phone wallpaper",
+                            "pudding phone wallpaper", 'custard phone wallpaper', "coffee phone wallpaper",
+                            "rock candy phone wallpaper"]
+
+    return list_of_search_terms[randint(0, len(list_of_search_terms) - 1)]
+
+
+def random_emotion():
+    list_of_emotions = [' adore ', ' devote to ', ' love ', " like ", ' dislike ', " enjoy ", " am angry at ", " feel sad for ", " am surprised by ", ' trust ', " anticipate ", ' crave ', " am interested in ", " satisfy "]
+
+    return list_of_emotions[randint(0, len(list_of_emotions) - 1)]
 
 
 def sleep_time():
