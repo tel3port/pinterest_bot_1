@@ -26,7 +26,7 @@ def random_search_term():
 
 
 def random_emotion():
-    list_of_emotions = [' adore ', ' devote to ', ' love ', " like ", ' dislike ', " enjoy ", " am angry at ", " feel sad for ", " am surprised by ", ' trust ', " anticipate ", ' crave ', " am interested in ", " satisfy "]
+    list_of_emotions = [' HATE ', ' adore ', ' devote to ', ' love ', " like ", ' dislike ', " enjoy ", " am angry at ", " feel sad for ", " am surprised by ", ' trust ', " anticipate ", ' crave ', " am interested in ", " satisfy "]
 
     return list_of_emotions[randint(0, len(list_of_emotions) - 1)]
 
