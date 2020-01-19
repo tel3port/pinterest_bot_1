@@ -31,7 +31,7 @@ class PinterestBot:
         chrome_options.add_argument("--disable-dev-sgm-usage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome(executable_path='./chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
         # self.driver = webdriver.Chrome("./chromedriver",)
         self. base_url = "https://www.pinterest.com"
         self.login()
