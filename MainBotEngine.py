@@ -38,6 +38,7 @@ class PinterestBot:
 
     def login(self):
         print("logging me in....")
+        print("session id at login: ", self.driver.session_id)
 
         try:
 
@@ -60,7 +61,8 @@ class PinterestBot:
         print("starting infinite scroll")
         time.sleep(10)
         try:
-            self.driver.get('https://www.pinterest.com/following/')
+            print("session id at infinite scroll: ", self.driver.session_id)
+            self.driver.get('https://www.pinterest.com/homefeed/')
             count = 0
             scroll_pause_time = 6
 
@@ -190,6 +192,8 @@ class PinterestBot:
 
     def follow_user(self, user_link):
         print("follow user started")
+        print("session id at follow user: ", self.driver.session_id)
+
         time.sleep(15)
         try:
             self.driver.get(user_link)
@@ -212,6 +216,8 @@ class PinterestBot:
             self.dm_single_user(user_link)
 
     def dm_single_user(self, user_link):
+        print("session id at dm_single_user: ", self.driver.session_id)
+
         try:
             message_button_xpath = "//button[contains(.,'Message')]"
             dm_input_xpath = '//*[contains(@id,"message")]'
@@ -233,6 +239,8 @@ class PinterestBot:
 
     def pin_image(self, single_desc, single_link, single_image):
         print("pin image start")
+        print("session id at pin_image: ", self.driver.session_id)
+
         time.sleep(15)
         random_search_term = gls.random_search_term()
         random_emotion = gls.random_emotion()
@@ -269,6 +277,8 @@ class PinterestBot:
             pass
 
     def pin_link_extractor(self, list_complements):
+        print("session id at pin_link_extractor: ", self.driver.session_id)
+
         links_set = set()
         try:
             time.sleep(7)
@@ -304,6 +314,8 @@ class PinterestBot:
             pass
 
     def image_commenter(self, pin_link, list_complements):
+        print("session id at image_commenter: ", self.driver.session_id)
+
         print('xxxxxx  pin_link xxxxxxxx')
         random_complement = list_complements[randint(0, len(list_complements) - 1)]
         print(random_complement)
@@ -346,7 +358,7 @@ class PinterestBot:
         search_url = 'https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img'
 
         time.sleep(12)
-        print(f'current session id: {wd.session_id}')
+        print(f'current session id fetch_image_urls: {wd.session_id}')
 
         # # open tab
         # current = wd.current_window_handle
@@ -439,6 +451,7 @@ class PinterestBot:
         target_folder = './dld_images'
         if not os.path.exists(target_folder):
             os.makedirs(target_folder)
+        print("session id at search_and_download: ", self.driver.session_id)
 
         # with webdriver.Chrome(executable_path=driver_path) as wd:
         res = self.fetch_image_urls(search_term, number_images, wd=self.driver, sleep_between_interactions=0.5)
@@ -471,6 +484,8 @@ class PinterestBot:
             return list_of_phrases
 
     def image_optimiser(self, my_csv):
+        print("session id at image_optimiser: ", self.driver.session_id)
+
         try:
             self.read_phrases_from_csv(my_csv)
 
