@@ -536,7 +536,7 @@ if __name__ == "__main__":
     def image_refresh_sequence():
         time.sleep(5)
         try:
-            pn_bot.search_and_download(pn_bot.random_search_term, './chromedriver', './dld_images', 75)
+            pn_bot.search_and_download(pn_bot.random_search_term, './chromedriver', './dld_images', 35)
             time.sleep(10)
             pn_bot.image_optimiser(gls.phrases_csv)
             pn_bot.image_deleter()
