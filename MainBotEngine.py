@@ -346,11 +346,11 @@ class PinterestBot:
         time.sleep(12)
         print(f'current session id: {wd.session_id}')
 
-        # open tab
-        current = wd.current_window_handle
-        wd.execute_script("window.open();")
-        new_tab = [tab for tab in wd.window_handles if tab != current][0]
-        wd.switch_to.window(new_tab)
+        # # open tab
+        # current = wd.current_window_handle
+        # wd.execute_script("window.open();")
+        # new_tab = [tab for tab in wd.window_handles if tab != current][0]
+        # wd.switch_to.window(new_tab)
         # You can use (Keys.CONTROL + 't') on other OSs
         # load the page
         time.sleep(12)
@@ -568,9 +568,9 @@ if __name__ == "__main__":
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
 
-        schedule.every().monday.at("03:03").do(image_refresh_sequence)
-        schedule.every().wednesday.at("03:21").do(image_refresh_sequence)
-        schedule.every().saturday.at("03:57").do(image_refresh_sequence)
+        # schedule.every().monday.at("03:03").do(image_refresh_sequence)
+        # schedule.every().wednesday.at("03:21").do(image_refresh_sequence)
+        schedule.every().day.at("03:57").do(image_refresh_sequence)
 
         schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
         schedule.every().day.at("09:00").do(comment_sequence)
