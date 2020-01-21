@@ -23,8 +23,7 @@ class PinterestBot:
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.random_search_term = gls.random_search_term()
-        self.random_emotion = gls.random_emotion()
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--headless")
@@ -234,6 +233,8 @@ class PinterestBot:
     def pin_image(self, single_desc, single_link, single_image):
         print("pin image start")
         time.sleep(15)
+        random_search_term = gls.random_search_term()
+        random_emotion = gls.random_emotion()
 
         try:
             self.driver.get(gls.pin_builder)
@@ -241,11 +242,11 @@ class PinterestBot:
             desc_xpath = '//*[contains(@id,"pin-draft-description")]'
             dest_link_xpath = '//*[contains(@id,"pin-draft-link")]'
             publish_btn_xpath = '//*[contains(@data-test-id,"board-dropdown-save-button")]'
-            board_selector = f'//*[contains(@title,"{self.random_search_term}")]'
+            board_selector = f'//*[contains(@title,"{random_search_term}")]'
 
-            self.driver.find_element_by_xpath(title_xpath).send_keys(f'I{self.random_emotion}{self.random_search_term}')
+            self.driver.find_element_by_xpath(title_xpath).send_keys(f'I{random_emotion}{random_search_term}')
             time.sleep(5)
-            self.driver.find_element_by_xpath(desc_xpath).send_keys(f'{self.random_search_term}! {single_desc}')
+            self.driver.find_element_by_xpath(desc_xpath).send_keys(f'{random_search_term}! {single_desc}')
             time.sleep(4)
             self.driver.find_element_by_xpath(dest_link_xpath).send_keys(single_link)
             time.sleep(7)
