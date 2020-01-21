@@ -23,7 +23,8 @@ class PinterestBot:
     def __init__(self, username, password):
         self.username = username
         self.password = password
-
+        self.random_search_term = gls.random_search_term()
+        self.random_emotion = gls.random_emotion()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--headless")
