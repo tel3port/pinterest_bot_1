@@ -344,6 +344,7 @@ class PinterestBot:
         search_url = 'https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img'
 
         time.sleep(12)
+        print(f'current session id: {wd.session_id}')
 
         # open tab
         current = wd.current_window_handle
@@ -404,10 +405,10 @@ class PinterestBot:
                 pass
 
             # close the tab
-            finally:
-                wd.close()
-
-                wd.switch_to.window(current)
+            # finally:
+            #     wd.close()
+            #
+            #     wd.switch_to.window(current)
 
         return image_urls
 
@@ -563,12 +564,12 @@ if __name__ == "__main__":
         pn_bot.pin_link_extractor(list_of_complements)
 
     # schedules when the above actions should be done
-    def custom_scheduler():
+    def custom_pinterest_bot_1_scheduler():
         # scheduling the pin and follow  and infinite scroll times
         print("starting custom scheduler")
 
-        schedule.every().tuesday.at("03:03").do(image_refresh_sequence)
-        schedule.every().thursday.at("03:21").do(image_refresh_sequence)
+        schedule.every().monday.at("03:03").do(image_refresh_sequence)
+        schedule.every().wednesday.at("03:21").do(image_refresh_sequence)
         schedule.every().saturday.at("03:57").do(image_refresh_sequence)
 
         schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
@@ -628,7 +629,7 @@ if __name__ == "__main__":
         schedule.every().day.at("23:44").do(follow_sequence)
         schedule.every().day.at("23:23").do(follow_sequence)
 
-        while True:
+        while 1:
             schedule.run_pending()
             time.sleep(1)
 
@@ -644,4 +645,4 @@ if __name__ == "__main__":
     # run_locally()
     # print("test done")
 
-    custom_scheduler()
+    custom_pinterest_bot_1_scheduler()
