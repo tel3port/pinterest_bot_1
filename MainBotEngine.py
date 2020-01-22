@@ -226,7 +226,7 @@ class PinterestBot:
             element = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable((By.XPATH, message_button_xpath)))
             time.sleep(15)
             element.click()
-            self.driver.find_element_by_xpath(dm_input_xpath).send_keys(gls.generic_dm)
+            self.driver.find_element_by_xpath(dm_input_xpath).send_keys(f"{gls.generic_dm} {gls.random_lander()}")
             time.sleep(5)
             self.driver.find_element_by_xpath(send_btn_xpath).click()
 

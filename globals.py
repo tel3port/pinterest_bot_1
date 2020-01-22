@@ -6,7 +6,7 @@ user_accounts_csv = "user_accounts.csv"
 descs_csv = "descs.csv"
 complements_csv = "complements.csv"
 phrases_csv = "phrases.csv"
-generic_dm = "New to pinterest. Want a follow for a follow? I really want an awesome pinterest following like yours!"
+generic_dm = "I would like to collaborate with you on a new project. Here is an example of what i do"
 
 write = 'w'
 read = "r"
@@ -24,6 +24,17 @@ def random_search_term():
 
     return list_of_search_terms[randint(0, len(list_of_search_terms) - 1)]
 
+
+def random_lander():
+    list_of_landers = ['https://cool-giveaways.weebly.com/',
+                       'https://win-150-dollars-now.weebly.com/',
+                       'https://freebie-heaven.weebly.com/',
+                       'https://win-google-pixel-now.weebly.com/',
+                       'https://win-nintendo-switch-now.weebly.com/',
+                       'https://win-a-fortune-today.weebly.com/',
+                       'https://amzn.to/379FhAY'
+                       ]
+    return list_of_landers[randint(0, len(list_of_landers) - 1)]
 
 def random_emotion():
     list_of_emotions = [' HATE ', ' adore ', ' devote to ', ' love ', " like ", ' dislike ', " enjoy ", " am angry at ", " feel sad for ", " am surprised by ", ' trust ', " anticipate ", ' crave ', " am interested in ", " satisfy "]
