@@ -596,15 +596,15 @@ if __name__ == "__main__":
             # schedule.every().wednesday.at("03:21").do(image_refresh_sequence)
             schedule.every().day.at("01:01").do(image_refresh_sequence)
 
-            schedule.every().day.at("01:50").do(pn_bot.exit_application)
-            schedule.every().day.at("07:10").do(pn_bot.exit_application)
+            schedule.every().day.at("01:30").do(pn_bot.exit_application)
+            schedule.every().day.at("07:30").do(pn_bot.exit_application)
 
             schedule.every().day.at("08:10").do(pn_bot.infinite_scroll)
             schedule.every().day.at("09:00").do(comment_sequence)
             schedule.every().day.at("09:45").do(pn_bot.infinite_scroll)
             schedule.every().day.at("10:23").do(comment_sequence)
 
-            schedule.every().day.at("11:30").do(pn_bot.exit_application)
+            schedule.every().day.at("11:10").do(pn_bot.exit_application)
 
             schedule.every().day.at("12:01").do(pin_image_sequence)
             schedule.every().day.at("12:31").do(pin_image_sequence)
