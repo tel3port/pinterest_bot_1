@@ -540,7 +540,7 @@ class PinterestBot:
 
 if __name__ == "__main__":
 
-    pn_bot = PinterestBot("2ksaber@gmail.com", "E5XB!D2MerD!XGK")
+    pn_bot = PinterestBot("gdfgdf@gmail.com", "E5XB!dfgdfg!XGK")
     print(f'search term in play: {pn_bot.random_search_term}')
     list_of_landers = ['https://cool-giveaways.weebly.com/',
                        'https://win-150-dollars-now.weebly.com/',
